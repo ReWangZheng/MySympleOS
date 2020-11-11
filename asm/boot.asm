@@ -23,9 +23,16 @@
 	BS_FileSysType	DB 'FAT12   '	; 文件系统类型, 必须 8个字节  
 
 	message db 'hello,this is my os boot!'
+	message_0 db 'successfully!'
+	message_0_len equ $-message_0
+	message_1 db 'faild'
+	message_1_len equ $-message_1
+	
 	loader_base dw 0x1000 ;段地址
 	loader_offset dw 0x000 ;偏移地址
+	loader_name db 'LOADER  BIN'
 LABEL_START:
+	mov ax,.read_lodaer
 	mov ax,cs
 	mov ds,ax
 	mov es,ax
@@ -55,20 +62,61 @@ LABEL_START:
 	mov ax,19 ;先读取FAT12文件系统的根目录
 	push ax
 	call read_sector
+	;下面开始在内存中搜索LOADER
+	mov ax,[loader_offset]
+	mov di,ax
+	mov ax,[loader_base]
+	mov es,ax
+	
+	mov si,loader_name
+	xor bx,bx
 
-	
-	;参数4:串长度
-	mov ax,16
+.cmp_process:
+	mov al,[es:di] 
+	mov ah,[ds:si+bx]
+	cmp al,ah
+	jnz .next1
+	inc bx
+	inc di
+	jmp	.cmp_process
+.next1:
+	cmp bx,11
+	jz .success
+	cmp di,520*14
+	jz .fail
+	xor bx,bx
+	inc di
+	jmp .cmp_process
+.success:
+	mov ax,message_0_len
 	push ax
-	
-	;参数4:显示坐标
-	mov ax,0x0200;
+	mov ax,0x0100
 	push ax
-	;7cab
-	;参数4: 偏移地址
-	push word [loader_offset]
-	;参数4：段地址
-	push word [loader_base]
+	push message_0
+	push cs
+	call show_str
+.read_lodaer:
+	add di,15	
+	
+	mov si,[loader_offset]
+	
+	mov ax,1
+	push ax ;读的扇区数量
+	push si ;偏移量
+	push word [loader_base] ;段地址
+	mov ax,[es:di] ;得到起始簇号
+	add ax,31
+	push ax;起始扇区号
+	call read_sector
+	jmp 0x1000:0x00
+	hlt
+.fail:
+	mov ax,message_1_len
+	push ax
+	mov ax,0x1000
+	push ax
+	push message_1
+	push cs
 	call show_str
 	hlt
 
@@ -117,7 +165,7 @@ read_sector:
 	
 	
 	mov bx,ax
-	shr bx,2 ;磁道号
+	shr bx,1 ;磁道号
 	mov ch,bl
 	
 	and ax,1 ;读头号
