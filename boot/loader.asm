@@ -14,19 +14,21 @@ org 0x10000
 	LABEL_GDT:	Descriptor	0,0,0	;空描述符
 	LABEL_CODE_4GB: Descriptor 0,0xfffff,DA_CR|DA_32|DA_LIMIT_4K;4GB代码段描述符
 	LABEL_DATA_4GB: Descriptor 0,0xfffff,DA_DRW|DA_32|DA_LIMIT_4K;4GB数据段描述符
-	LABEL_VADIO:Descriptor 0,0xfffff,DA_DRW|DA_DPL3;显存空间
+	LABEL_VADIO:Descriptor 0xb8000,0xffff,DA_DRW|DA_DPL3;显存空间
 	
 	GDT_LEN equ $-LABEL_GDT
 	
 	GDT_ADD dw GDT_LEN-1 ;段界限
 			dd LABEL_GDT	;段基址 
 
+	kernel_enter dd 0 ;段偏移
+				 dw Sele_Code_4GB ;选择子
 	;段选择子
 	Sele_Code_4GB equ Selector(1,0,0)
 	Sele_Data_4GB equ Selector(2,0,0)
 	Sele_Vadio equ Selector(3,0,0)
 start:	
-	mov ax,.fail
+	mov ax,.protected_mode_start
 	mov ax,cs
 	mov ds,ax
 	push word 0x01
@@ -99,11 +101,6 @@ start:
 	call read_sector
 	jmp .read_FAT
 .read_end:
-	push word message_0_len
-	push word 0x1000
-	push message_0
-	push cs
-	call show_str
 	jmp .protected_mode
 .fail:
 	push word message_1_len
@@ -115,7 +112,7 @@ start:
 .protected_mode:
 	;下面准备进入保护模式
 	;首先我们要加载GDT
-	lgdt [GDT_ADD]
+	lgdt [GDT_ADD] ;0x00000001010b
 	;然后关中断
 	cli
 	;然后打开地址线A20
@@ -126,18 +123,61 @@ start:
 	mov eax,cr0
 	or eax,1
 	mov cr0,eax
-	jmp dword 0x0010:.protected_mode_start
+	jmp dword 0x0008:.protected_mode_start
 [BITS	32]
 .protected_mode_start:
-	mov eax,50
-	mov ebx,50
-	mov ax,Sele_Vadio
+	mov ax,Sele_Data_4GB
 	mov ds,ax
-	mov al,'a'
-	mov ah,0x07
-	mov [0x00],ax
+	mov es,ax
+	mov esi,0x30000
+	mov edi,[esi+24] ;入口地址
+	mov eax,[esi+28];program table的偏移
+	mov cx,[esi+44] ;program table的条目数量
+	movzx ecx,cx
+	mov dx,[esi+42] ;program table每个条目的size
+	movzx edx,dx
+.copy_ph:
+	push dword [es:esi+eax+16] ;文件大小
+	mov ebx,0x30000 ;文件开始的位置
+	add ebx,[es:esi+eax+4] ;文件偏移的位置
+	push ebx
+	push dword [es:esi+eax+12] ;开始物理地址
+	call memcpy
+	add esp,12
+	add eax,edx
+	loop .copy_ph
+	;下面将控制器转交给内核
+	;以下代码准备读取内核ELF信息
+	mov dword [kernel_enter],edi ;0x10171
+	jmp [kernel_enter] ;0x1016b
 	hlt
+;--------------
+memcpy:
+	;参数1：目标地址
+	;参数2：源地址
+	;参数3：复制大小
+	push ebp
+	mov ebp,esp
+	push eax
+	push ebx
+	push ecx
+	push edi
+	push esi
+	mov edi,[ebp+8] ;参数1
+	mov esi,[ebp+12];参数2
+	mov ecx,[ebp+16];参数3
+	cld
+	rep movsb
+	pop esi
+	pop edi
+	pop ecx
+	pop ebx
+	pop eax
+	pop ebp
+
+	ret
 ;----------------------------------------------------------------------------------------
+[BITS	16]
 NextFATEntry:
 	;参数1：给出一个簇号，求出其下一个簇
 	;返回：ax为下一个簇号
@@ -187,7 +227,6 @@ NextFATEntry:
 	pop dx
 	pop cx
 	pop bx
-
 	ret 2
 		
 ;------------------------------------------------------------------show_str

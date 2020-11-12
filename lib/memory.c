@@ -1,4 +1,5 @@
 #include "../include/memory_.h"
-void test(int a,int b){
-    memcpy(1,1,1);
+void test(){
+    int a=10;
+    int b=20;
 }

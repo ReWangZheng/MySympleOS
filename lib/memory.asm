@@ -1,38 +1,26 @@
 ;导出函数
 global memcpy
-extern test
-global _start
 ;void* memcpy(void * des,void* source,int sizes); 函数原型
 memcpy:
-    push ebp
-    mov ebp,esp
-    push eax
-    push esi
-    push ecx
-    push edi
-    mov esi,[ebp+8] ;等待复制的目的地址
-    mov edi,[ebp+12] ;源地址
-    mov ecx,[ebp+16] ;需要复制的大小
-.copy:
-    mov al,[ds:esi]
-    mov [es:edi],al
-    inc edi
-    inc esi
-    loop .copy
-    pop edi
-    pop ecx
-    pop esi
-    pop eax
-    pop ebp
-    ret
-[section .data]	; 数据在此
-num1st		dd	3
-num2nd		dd	4
-[section text]
-_start:
-    push eax
-    push ebx
-    call test
-    mov	ebx, 0
-	mov	eax, 1		; sys_exit
-	int	0x80		; 系统调用
+	;参数1：目标地址
+	;参数2：源地址
+	;参数3：复制大小
+	push ebp
+	mov ebp,esp
+	push eax
+	push ebx
+	push ecx
+	push edi
+	push esi
+	mov edi,[ebp+8] ;参数1
+	mov esi,[ebp+12];参数2
+	mov ecx,[ebp+16];参数3
+	cld
+	rep movsb
+	pop esi
+	pop edi
+	pop ecx
+	pop ebx
+	pop eax
+	pop ebp
+	ret
