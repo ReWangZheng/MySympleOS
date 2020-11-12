@@ -1,4 +1,4 @@
-org 0x10000	
+org 0x10000
 	jmp short start
 	kernel_base dw 0x3000
 	kernel_offset dw 0x0000
@@ -10,8 +10,23 @@ org 0x10000
 	FAT_base dw 0x0950
 	FAT_offset equ 0
 
+	%include "pm.inc"
+	LABEL_GDT:	Descriptor	0,0,0	;空描述符
+	LABEL_CODE_4GB: Descriptor 0,0xfffff,DA_CR|DA_32|DA_LIMIT_4K;4GB代码段描述符
+	LABEL_DATA_4GB: Descriptor 0,0xfffff,DA_DRW|DA_32|DA_LIMIT_4K;4GB数据段描述符
+	LABEL_VADIO:Descriptor 0,0xfffff,DA_DRW|DA_DPL3;显存空间
+	
+	GDT_LEN equ $-LABEL_GDT
+	
+	GDT_ADD dw GDT_LEN-1 ;段界限
+			dd LABEL_GDT	;段基址 
+
+	;段选择子
+	Sele_Code_4GB equ Selector(1,0,0)
+	Sele_Data_4GB equ Selector(2,0,0)
+	Sele_Vadio equ Selector(3,0,0)
 start:	
-	mov ax,.read_end
+	mov ax,.fail
 	mov ax,cs
 	mov ds,ax
 	push word 0x01
@@ -84,14 +99,43 @@ start:
 	call read_sector
 	jmp .read_FAT
 .read_end:
-	jmp 0x3000:0x0000
-	hlt
+	push word message_0_len
+	push word 0x1000
+	push message_0
+	push cs
+	call show_str
+	jmp .protected_mode
 .fail:
 	push word message_1_len
 	push word 0x1000
 	push message_1
 	push cs
 	call show_str
+	hlt
+.protected_mode:
+	;下面准备进入保护模式
+	;首先我们要加载GDT
+	lgdt [GDT_ADD]
+	;然后关中断
+	cli
+	;然后打开地址线A20
+	in al,92h
+	or al,00000010b
+	out 92h,al
+	;修改CR0寄存器跳入到保护模式
+	mov eax,cr0
+	or eax,1
+	mov cr0,eax
+	jmp dword 0x0010:.protected_mode_start
+[BITS	32]
+.protected_mode_start:
+	mov eax,50
+	mov ebx,50
+	mov ax,Sele_Vadio
+	mov ds,ax
+	mov al,'a'
+	mov ah,0x07
+	mov [0x00],ax
 	hlt
 ;----------------------------------------------------------------------------------------
 NextFATEntry:
