@@ -4,7 +4,7 @@ binhome=/home/regan/code/os_project/bin/
 bootinclude=boot/include/
 asminclude=include/
 CFLAGS		= -m32 -c
-
+kernel_obj = kernel.o util.o start.o cutil.o 
 vpath %.asm boot:kernel:lib
 vpath %.o bin
 vpath %.c lib:kernel
@@ -19,13 +19,13 @@ boot:boot.bin loader.bin
 	sudo mount -o loop a.img /mnt/floppy/
 	sudo cp $(binhome)loader.bin /mnt/floppy/
 	sudo umount /mnt/floppy
-
-kernel.o : kernel.asm
+%.o:%.asm
 	nasm -f elf $^ -I $(asminclude) -o $(binhome)$@
-test.o: memory.c
-	gcc -m32 -c $^ -o $(binhome)test.o
 
-kernel.bin:kernel.o test.o
+%.o: %.c
+	gcc -I $(asminclude) -m32 -c -fno-stack-protector $^ -o $(binhome)$@
+
+kernel.bin:$(kernel_obj)
 	ld -m elf_i386 -Ttext 0x35000 -s -o $(binhome)$@  $^ 
 kernel:kernel.bin
 	sudo mount -o loop a.img /mnt/floppy/
@@ -36,3 +36,6 @@ kernel:kernel.bin
 
 debug:
 	bochs -f $(bochsrc)
+
+clean:
+	rm bin/*.o

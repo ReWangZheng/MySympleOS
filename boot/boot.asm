@@ -2,6 +2,7 @@
 	jmp short LABEL_START		; Start to boot.
 	nop				; 这个 nop 不可少
 	%include "fat.inc" ;FAT的磁盘头
+	%include "load.inc"
 	message db 'hello,this is my os boot!'
 	message_0 db 'successfully!'
 	message_0_len equ $-message_0
@@ -9,8 +10,6 @@
 	message_1_len equ $-message_1
 	FAT_base dw 0x0950
 	FAT_offset equ 0
-	loader_base dw 0x1000 ;段地址
-	loader_offset dw 0x000 ;偏移地址
 	loader_name db 'LOADER  BIN'
 LABEL_START:
 	mov ax,.read_end
@@ -33,16 +32,16 @@ LABEL_START:
 	call show_str
 	
 	push word 0x01
-	mov ax,[loader_offset]
+	mov ax,loader_offset
 	push ax 
-	mov ax,[loader_base]
+	mov ax,loader_base
 	push ax
 	push word 19 ;先读取FAT12文件系统的根目录
 	call read_sector
 	;下面开始在内存中搜索LOADER
-	mov ax,[loader_offset]
+	mov ax,loader_offset
 	mov di,ax
-	mov ax,[loader_base]
+	mov ax,loader_base
 	mov es,ax
 	
 	mov si,loader_name
@@ -74,11 +73,11 @@ LABEL_START:
 .read_lodaer:
 	add di,15	
 	
-	mov si,[loader_offset]
+	mov si,loader_offset
 	
 	push word 0x01 ;读的扇区数量
 	push si ;偏移量
-	push word [loader_base] ;段地址
+	push word loader_base ;段地址
 	mov ax,[es:di] ;得到起始簇号
 	mov bx,ax
 	add ax,31
@@ -94,7 +93,7 @@ LABEL_START:
 	mov ax,1
 	push ax ;读的扇区数量
 	push si ;偏移量
-	push word [loader_base] ;段地址
+	push word loader_base ;段地址
 	mov ax,[es:di] ;得到起始簇号
 	mov ax,bx
 	add ax,31
@@ -102,7 +101,7 @@ LABEL_START:
 	call read_sector
 	jmp .read_FAT
 .read_end:
-	jmp 0x1000:0x00
+	jmp loader_base:loader_offset
 	hlt
 .fail:
 	push word message_1_len

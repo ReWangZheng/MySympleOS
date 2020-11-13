@@ -1,16 +1,14 @@
 org 0x10000
 	jmp short start
-	kernel_base dw 0x3000
-	kernel_offset dw 0x0000
 	kernel_name db 'KERNEL  BIN'
 	message_0 db 'read the kernel successfully!'
 	message_0_len equ $-message_0
 	message_1 db 'read the kernl faild!'
 	message_1_len equ $-message_1
-	FAT_base dw 0x0950
-	FAT_offset equ 0
 
 	%include "pm.inc"
+	%include "load.inc"
+	
 	LABEL_GDT:	Descriptor	0,0,0	;空描述符
 	LABEL_CODE_4GB: Descriptor 0,0xfffff,DA_CR|DA_32|DA_LIMIT_4K;4GB代码段描述符
 	LABEL_DATA_4GB: Descriptor 0,0xfffff,DA_DRW|DA_32|DA_LIMIT_4K;4GB数据段描述符
@@ -32,16 +30,16 @@ start:
 	mov ax,cs
 	mov ds,ax
 	push word 0x01
-	mov ax,[kernel_offset]
+	mov ax,kernel_offset
 	push ax 
-	mov ax,[kernel_base]
+	mov ax,kernel_base
 	push ax
 	push word 19 ;先读取FAT12文件系统的根目录
 	call read_sector
 	;下面开始在内存中搜索内核
-	mov ax,[kernel_offset]
+	mov ax,kernel_offset
 	mov di,ax
-	mov ax,[kernel_base]
+	mov ax,kernel_base
 	mov es,ax
 	
 	mov si,kernel_name
@@ -73,11 +71,11 @@ start:
 .read_lodaer:
 	add di,15	
 	
-	mov si,[kernel_offset]
+	mov si,kernel_offset
 	
 	push word 0x01 ;读的扇区数量
 	push si ;偏移量
-	push word [kernel_base] ;段地址
+	push word kernel_base ;段地址
 	mov ax,[es:di] ;得到起始簇号
 	mov bx,ax
 	add ax,31
@@ -93,7 +91,7 @@ start:
 	mov ax,1
 	push ax ;读的扇区数量
 	push si ;偏移量
-	push word [kernel_base] ;段地址
+	push word kernel_base ;段地址
 	mov ax,[es:di] ;得到起始簇号
 	mov ax,bx
 	add ax,31
@@ -147,7 +145,7 @@ start:
 	add eax,edx
 	loop .copy_ph
 	;下面将控制器转交给内核
-	;以下代码准备读取内核ELF信息
+	;以下代码me准备读取内核ELF信息
 	mov dword [kernel_enter],edi ;0x10171
 	jmp [kernel_enter] ;0x1016b
 	hlt
@@ -205,11 +203,11 @@ NextFATEntry:
 	push ax ;参数4
 	mov ax,FAT_offset
 	push ax ;参数3
-	push word [FAT_base] ;参数2
+	push word FAT_base ;参数2
 	push bx ;参数1
 	call read_sector
 	;读完之后，我们接下来要定位到那三个字节,即保存在dx中
-	mov ax,[FAT_base]
+	mov ax,FAT_base
 	mov es,ax
 	mov bx,dx
 	mov eax,[es:bx] ;一次读了4个字节，但是只有前面3个有用
