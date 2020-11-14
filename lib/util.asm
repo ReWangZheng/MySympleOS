@@ -115,3 +115,37 @@ SetCursor:
         pop ebp
         ret
 
+;--------------------------;--------------------------
+global out_byte
+;void out_byte(u16 port,u8 value);
+out_byte:
+    ;参数1：端口号
+    ;参数2：值
+    push ebp
+    mov ebp,esp
+    push edx
+    mov edx,[ebp+8]
+    mov eax,[ebp+12]
+    out dx,al
+    nop
+    nop
+    nop
+    nop
+    pop edx
+    pop ebp
+    ret
+;--------------------------------------------
+global in_byte
+in_byte:
+    ;参数1：端口号
+    push ebp
+    push edx
+    mov ebp,esp
+    mov dx,[ebp+8]
+    xor eax,eax
+    in al,dx
+    nop
+    nop
+    pop edx
+    pop ebp
+    ret

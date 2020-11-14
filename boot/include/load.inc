@@ -9,3 +9,6 @@
     ;kernel加载位置
     kernel_base equ 0x3000
 	kernel_offset equ 0x0000
+
+    ;GDT加载位置:0x10045  段界限 
+    ;IDT加载位置：0x3000 段界限8*10=80

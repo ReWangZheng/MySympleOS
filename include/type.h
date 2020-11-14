@@ -13,12 +13,29 @@ typedef struct S_Descriptor
     u8 limit_high_att2; // 1个字节
     u8 base_high; //1个字节
 }S_Descriptor;
+typedef struct Int_Descriptor
+{
+    u16 low_off;
+    u16 code_sel;
+    u16 attr;
+    u16 high_off;
+}Int_Descriptor;
+
 typedef struct GDT
 {
     u16 gdt_len; //gdt的长度
     u16 gdt_low_addr; //gdt的低地址
     u16 gdt_high_addr; //gdt高地址
 }GDT;
+
+typedef struct IDT
+{
+    u16 idt_len; 
+    u16 idt_low_addr; 
+    u16 idt_high_addr; 
+}IDT;
+
+
 typedef struct Cursor
 {
     int x;

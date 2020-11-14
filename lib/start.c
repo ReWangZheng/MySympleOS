@@ -1,10 +1,20 @@
 #include "const.h"
 #include "type.h"
 #include "util.h"
+#include "cprotect.h"
+#include "cmemory.h"
+#include "Interrupt.h"
 GDT gdt_ptr;
+IDT idt_ptr;
 int gdt_size=0;
 void cstart(){
-    gdt_ptr.gdt_len = 48;
-    gdt_ptr.gdt_low_addr = 0x7000;
-    gdt_ptr.gdt_high_addr = 0x0003;
+    GDT old_gdt;
+    GetGDT(&old_gdt);
+    memcpy(&gdt_ptr,&old_gdt,6);
+    idt_ptr.idt_len = IDT_LEN;
+    idt_ptr.idt_low_addr = IDT_ADDR;
+    idt_ptr.idt_high_addr = (IDT_ADDR>>16);
+    SetInt(0x20,Interrupt_0);
+    Init_8259();
+
 }
