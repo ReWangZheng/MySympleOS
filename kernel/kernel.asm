@@ -1,5 +1,5 @@
 extern cstart
-
+extern clean_screen
 extern gdt_ptr ;GDT
 extern idt_ptr ;IDT
 extern Init_8259
@@ -13,4 +13,5 @@ _start:
     lgdt [gdt_ptr]
     lidt [idt_ptr]
     sti
+    jmp 0x40:0
     jmp $

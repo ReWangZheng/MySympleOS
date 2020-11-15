@@ -1,6 +1,5 @@
 #ifndef CPROTECT
 #define CPROTEXT
-#include "protect.h"
 //注册一个GDT描述符
 void AddGDTDes();
 
@@ -12,4 +11,5 @@ void Init_8259();
 
 // 安装一个中断处理程序
 void SetInt(int num,u32 addr);
+
 #endif

@@ -14,7 +14,5 @@ void cstart(){
     idt_ptr.idt_len = IDT_LEN;
     idt_ptr.idt_low_addr = IDT_ADDR;
     idt_ptr.idt_high_addr = (IDT_ADDR>>16);
-    SetInt(0x20,Interrupt_0);
-    Init_8259();
-
+    init_interrupt();
 }

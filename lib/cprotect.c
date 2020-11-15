@@ -2,6 +2,7 @@
 #include "const.h"
 #include "type.h"
 #include "memory.h"
+#include "protect.h"
 extern IDT idt_ptr;
 void Init_8259(){
     out_byte(MASTER_8259_PORT1,ICW1);
