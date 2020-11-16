@@ -8,8 +8,6 @@
 	message_0_len equ $-message_0
 	message_1 db 'faild'
 	message_1_len equ $-message_1
-	FAT_base dw 0x0950
-	FAT_offset equ 0
 	loader_name db 'LOADER  BIN'
 LABEL_START:
 	mov ax,.read_end
@@ -101,7 +99,7 @@ LABEL_START:
 	call read_sector
 	jmp .read_FAT
 .read_end:
-	jmp loader_base:loader_offset
+	jmp loader_base:loader_offset ;b 0x7d2b:
 	hlt
 .fail:
 	push word message_1_len
@@ -138,11 +136,11 @@ NextFATEntry:
 	push ax ;参数4
 	mov ax,FAT_offset
 	push ax ;参数3
-	push word [FAT_base] ;参数2
+	push word FAT_base ;参数2
 	push bx ;参数1
 	call read_sector
 	;读完之后，我们接下来要定位到那三个字节,即保存在dx中
-	mov ax,[FAT_base]
+	mov ax,FAT_base
 	mov es,ax
 	mov bx,dx
 	mov eax,[es:bx] ;一次读了4个字节，但是只有前面3个有用

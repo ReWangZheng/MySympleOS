@@ -31,7 +31,6 @@ SS_ERR:
     push 4
     jmp exception
 ;常规保护错误 0x13
-
 GP_ERR: 
     push 5
     jmp exception
@@ -41,5 +40,5 @@ PF_ERR:
     jmp exception
 exception:
     call exception_handle
-    add esp,4
-    hlt
+    add esp,4*2;0x00000003577d
+    iret

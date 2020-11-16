@@ -43,11 +43,6 @@ char * itoc(char *str,int number){
     return str;
 }
 void clean_screen(){
-    char *temp =" ";
-    for(int i=0;i<25;i++){
-        for(int j=0;j<80;j++){
-            display_str(temp,j,i);
-        }
-    }
+    clear();
     SetCursor(0,0);
 }

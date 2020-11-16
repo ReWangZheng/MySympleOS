@@ -139,8 +139,8 @@ global in_byte
 in_byte:
     ;参数1：端口号
     push ebp
-    push edx
     mov ebp,esp
+    push edx
     mov dx,[ebp+8]
     xor eax,eax
     in al,dx
@@ -149,3 +149,39 @@ in_byte:
     pop edx
     pop ebp
     ret
+;---------------------
+global clear
+clear:
+	;清屏
+    push eax
+    push ebx
+    push edi
+    mov ebx,0
+    mov edi,0xb8000
+    mov al,' '
+    mov ah,07
+.@1:
+    mov [edi+ebx],ax
+    cmp ebx,4000
+    add ebx,2
+    jnz .@1
+    mov eax,0x
+    pop edi
+    pop eax
+    pop ebx
+    ret
+global get_cr2
+get_cr2:
+    ;参数1：目标地址
+    push ebp
+    mov ebp,esp
+    push eax
+    push edi
+    mov edi,[ebp+8]
+    mov eax,cr2
+    mov [edi],eax
+    pop edi
+    pop eax
+    pop ebp
+    ret
+    

@@ -1,4 +1,3 @@
-org 0x10000
 	jmp short start
 	kernel_name db 'KERNEL  BIN'
 	message_0 db 'read the kernel successfully!'
@@ -17,7 +16,7 @@ org 0x10000
 	GDT_LEN equ $-LABEL_GDT
 	
 	GDT_ADD dw GDT_LEN-1 ;段界限
-			dd LABEL_GDT	;段基址 
+			dd LABEL_GDT+loader_address	;段基址 
 
 	kernel_enter dd 0 ;段偏移
 				 dw Sele_Code_4GB ;选择子
@@ -26,7 +25,6 @@ org 0x10000
 	Sele_Data_4GB equ Selector(2,0,0)
 	Sele_Vadio equ Selector(3,0,0)
 start:	
-	mov ax,.protected_mode_start
 	mov ax,cs
 	mov ds,ax
 	push word 0x01
@@ -102,7 +100,7 @@ start:
 	jmp .protected_mode
 .fail:
 	push word message_1_len
-	push word 0x1000
+	push word 0x800
 	push message_1
 	push cs
 	call show_str
@@ -121,7 +119,7 @@ start:
 	mov eax,cr0
 	or eax,1
 	mov cr0,eax
-	jmp dword 0x0008:.protected_mode_start
+	jmp dword 0x0008:.protected_mode_start + loader_address
 [BITS	32]
 .protected_mode_start:
 	mov ax,Sele_Data_4GB
@@ -136,7 +134,7 @@ start:
 	movzx edx,dx
 .copy_ph:
 	push dword [es:esi+eax+16] ;文件大小
-	mov ebx,0x30000 ;文件开始的位置
+	mov ebx,kernel_address ;文件开始的位置
 	add ebx,[es:esi+eax+4] ;文件偏移的位置
 	push ebx
 	push dword [es:esi+eax+12] ;开始物理地址
@@ -146,8 +144,8 @@ start:
 	loop .copy_ph
 	;下面将控制器转交给内核
 	;以下代码me准备读取内核ELF信息
-	mov dword [kernel_enter],edi ;0x10171
-	jmp [kernel_enter] ;0x1016b
+	mov dword [kernel_enter],edi ;
+	jmp [kernel_enter] ;0x816b
 	hlt
 ;--------------
 memcpy:

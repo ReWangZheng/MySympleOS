@@ -29,4 +29,7 @@
 
 #define Sele_Code_4GB 0x08
 
+#define PAGE_CATALOG_ATTR 0x03
+#define PAGE_TABLE_ATTR 0x07
+#define PAGE__ATTR 0x07
 #endif

@@ -22,17 +22,22 @@ void init_interrupt(){
     Init_8259();
     SetInt(0x20,Interrupt_0);
 }
+char *mes[7]={
+    " ",
+    "The divisor cannot be 0!",
+    "TSS segment  valid",
+    "Segment valid",
+    "Stack Segment err",
+    "the memeory or protect mode check err ",
+    "page err!"
+};
+
 void exception_handle(int code){
-    char *mes[7]={
-        " ",
-        "The divisor cannot be 0!",
-        "TSS segment  valid",
-        "Segment valid",
-        "Stack Segment err",
-        "the memeory or protect mode check err ",
-        "page err!"
-    };
-    clean_screen();
     print("err message: ");
     print(mes[code]);
+    if(code==6){
+        u32 addr;
+        get_cr2(&addr);
+        AddPageOnadd(addr);
+    }
 }

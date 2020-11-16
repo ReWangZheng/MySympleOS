@@ -4,6 +4,7 @@
 #include "cprotect.h"
 #include "cmemory.h"
 #include "Interrupt.h"
+#include "page.h"
 GDT gdt_ptr;
 IDT idt_ptr;
 int gdt_size=0;
@@ -14,5 +15,5 @@ void cstart(){
     idt_ptr.idt_len = IDT_LEN;
     idt_ptr.idt_low_addr = IDT_ADDR;
     idt_ptr.idt_high_addr = (IDT_ADDR>>16);
-    init_interrupt();
+    init_interrupt(); //0x000000035012
 }
