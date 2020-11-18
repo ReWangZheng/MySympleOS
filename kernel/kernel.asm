@@ -17,6 +17,5 @@ _start:
     sti
     call init_pagemode
     mov ax,[0x0f025412]
-
     jmp $
     ;0x3577a
