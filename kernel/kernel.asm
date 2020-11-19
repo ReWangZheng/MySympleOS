@@ -12,8 +12,6 @@ _start:
     mov bx,100
     mov cx,100
     call cstart
-    lgdt [gdt_ptr]
-    lidt [idt_ptr]
     sti
     call init_pagemode
     mov ax,[0x0f025412]

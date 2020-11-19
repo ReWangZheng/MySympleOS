@@ -1,7 +1,6 @@
 #ifndef PROCESS
 #define PROCESS
-//ok
-
-
+#include "type.h"
+void LoadGdt(u32 * addr);
 
 #endif

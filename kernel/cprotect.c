@@ -4,6 +4,7 @@
 #include "memory.h"
 #include "protect.h"
 extern IDT idt_ptr;
+extern GDT gdt_ptr;
 void Init_8259(){
     out_byte(MASTER_8259_PORT1,ICW1);
     out_byte(CASCADE_8259_PORT1,ICW1);
@@ -35,4 +36,11 @@ void SetInt(int num,u32 addr){
     Idesc.attr = 0x8e00;
     u32 idt_address = u16_and_u16(idt_ptr.idt_high_addr,idt_ptr.idt_low_addr) + num*8;
     memcpy(idt_address,&Idesc,8);
+}
+void SetUpGdtDescriptor(u32 des){
+    u32 * gdtaddr = ((u32)gdt_ptr.gdt_high_addr<<16)|(gdt_ptr.gdt_low_addr);
+    gdtaddr += ((gdt_ptr.gdt_len+1) / 8);
+    (*gdtaddr) = des;
+    gdt_ptr.gdt_len+=8;
+    LoadGdt(&gdt_ptr);
 }
