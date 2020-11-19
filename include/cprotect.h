@@ -14,6 +14,4 @@ void SetInt(int num,u32 addr);
 
 //安装一个GDT描述符
 void SetUpGdtDescriptor(u32 des);
-
-
 #endif

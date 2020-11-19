@@ -5,4 +5,5 @@
 void LoadGDT(GDT * addr);
 void LoadIDT(IDT * addr);
 void GetGDT(GDT * gdt);
+void LoadLDT(LDT * ldt);
 #endif

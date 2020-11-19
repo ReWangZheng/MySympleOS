@@ -13,6 +13,7 @@ Interrupt_0:
     mov al,20h
     mov dx,20h
     out dx,al
+    
     iret
 ;除数为0  0x00
 DE_ERR:

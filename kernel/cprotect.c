@@ -42,5 +42,14 @@ void SetUpGdtDescriptor(u32 des){
     gdtaddr += ((gdt_ptr.gdt_len+1) / 8);
     (*gdtaddr) = des;
     gdt_ptr.gdt_len+=8;
-    LoadGdt(&gdt_ptr);
+    LoadGDT(&gdt_ptr);
+}
+
+void SetUpLdtDescriptor(LDT *ldt,u32 des){
+    u32 * ldtaddr = ((u32)ldt->ldt_high_addr<<16)|(ldt->ldt_low_addr);
+    
+    ldtaddr += ((gdt_ptr.gdt_len+1) / 8);
+    (*ldtaddr) = des;
+    ldt->ldt_len+=8;
+    LoadLDT(ldt);
 }

@@ -3,11 +3,15 @@ bochsrc=~/code/os/bochsrc
 binhome=/home/regan/code/os_project/bin/
 bootinclude=boot/include/
 asminclude=include/
-CFLAGS= -m32 -c
-kernel_obj = kernel.o util.o start.o cutil.o protect.o memory.o cprotect.o cinterrupt.o interrupt.o page.o cpage.o
-vpath %.o bin
-vpath %.asm boot:kernel:lib
-vpath %.c lib:kernel
+CFLAGS=-m32 -c
+kernel_obj=kernel.o util.o start.o cutil.o protect.o memory.o cprotect.o cinterrupt.o interrupt.o page.o cpage.o
+VPATH:=bin kernel include lib
+%.o:%.asm
+	nasm -f elf $^ -I $(asminclude) -o $(binhome)$@
+
+%.o: %.c
+	gcc -I $(asminclude) -m32 -c -fno-stack-protector $^ -o $(binhome)$@
+
 boot.bin: boot.asm
 	nasm $^ -I $(bootinclude) -o $(binhome)$@
 loader.bin: loader.asm
@@ -27,12 +31,6 @@ kernel:kernel.bin
 	sudo cp $(binhome)$@.bin /mnt/floppy/
 	sudo umount /mnt/floppy
 
-
-%.o:%.asm
-	nasm -f elf $^ -I $(asminclude) -o $(binhome)$@
-
-%.o: %.c
-	gcc -I $(asminclude) -m32 -c -fno-stack-protector $^ -o $(binhome)$@
 
 
 .PHONY:boot,debug

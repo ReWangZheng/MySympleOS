@@ -28,6 +28,13 @@ typedef struct GDT
     u16 gdt_high_addr; //gdt高地址
 }GDT;
 
+typedef struct LDT
+{
+    u16 ldt_len; //gdt的长度
+    u16 ldt_low_addr; //gdt的低地址
+    u16 ldt_high_addr; //gdt高地址
+}LDT;
+
 typedef struct IDT
 {
     u16 idt_len; 
@@ -41,6 +48,36 @@ typedef struct Cursor
     int x;
     int y;
 }Cursor;
+
+typedef struct TSS
+{
+    u32 * tss_pre;
+    u32 ESP0;
+    u32 SS0;
+    u32 ESP1;
+    u32 SS1;
+    u32 ESP2;
+    u32 SS2;
+
+    u32 CR3;
+    u32 EIP;
+    u32 EFLAGE;
+    u32 EAX;
+    u32 ECX;
+    u32 EDX;
+    u32 EBX;
+    u32 ESP;
+    u32 EBP;
+    u32 ESI;
+    u32 EDI;
+    u32 ES;
+    u32 CS;
+    u32 SS;
+    u32 DS;
+    u32 FS;
+    u32 GS;
+};
+
 
 
 
