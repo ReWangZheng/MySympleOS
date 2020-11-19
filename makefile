@@ -7,6 +7,7 @@ CFLAGS		= -m32 -c
 kernel_obj = kernel.o util.o start.o cutil.o protect.o memory.o cprotect.o cinterrupt.o interrupt.o page.o cpage.o
 vpath %.asm boot:kernel:lib
 vpath %.o bin
+#ok
 vpath %.c lib:kernel
 boot.bin: boot.asm
 	nasm $^ -I $(bootinclude) -o $(binhome)$@
