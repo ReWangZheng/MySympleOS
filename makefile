@@ -8,7 +8,6 @@ kernel_obj = kernel.o util.o start.o cutil.o protect.o memory.o cprotect.o cinte
 vpath %.asm boot:kernel:lib
 vpath %.o bin
 vpath %.c lib:kernel
-# hello
 boot.bin: boot.asm
 	nasm $^ -I $(bootinclude) -o $(binhome)$@
 loader.bin: loader.asm
