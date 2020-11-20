@@ -3,13 +3,15 @@ global display_str
 ;void display_str(char *str,int x,int y)
 display_str:
 	;参数1：串的地址
-	;参数2：显示坐标行
-    ;参数3：显示的坐标列
+	;参数2：显示坐标列
+    ;参数3：显示的坐标行
 	push ebp
 	mov ebp,esp
-    ;首先计算行开始的字节
+    pushad
+    ;设置显存
     mov ax,0x18
     mov es,ax
+    ;首先计算行开始的字节
     mov eax,[ss:ebp+16]
     mov bx,160
     mul bx
@@ -22,36 +24,13 @@ display_str:
     mov al,[esi]
 	cmp al,0
     jz .end
-    cmp al,0x0a ;如果是换行符
-    jz .add_line
     ;下面正常显示字符
     mov [es:edi],ax
     add edi,2
     inc esi
     jmp .read_str
-.add_line:
-    push eax
-    push ebx
-    push edx
-    mov eax,edi
-    mov ebx,160
-    div ebx
-    add edi,edx
-    pop edx
-    pop ebx
-    pop eax
-    inc esi
-    jmp .read_str
 .end:
-    ;重新设置cursor
-    mov eax,edi
-    mov ebx,160
-    div ebx ;eax行，edx为列
-    shr edx,1
-    push eax
-    push edx
-    call SetCursor
-    add esp,8
+    popad
     pop ebp
     ret
 ;--------------------------------------

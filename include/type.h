@@ -4,15 +4,11 @@ typedef	unsigned int		u32;
 typedef	unsigned short		u16;
 typedef	unsigned char		u8;
 //描述符，共8个字节
-typedef struct S_Descriptor
+typedef struct Descriptor
 {
-    u16 limit_low; //2个字节
-    u16 base_low; //2个字节
-    u8 base_mid; // 1个字节
-    u8 attr1; //1个字节
-    u8 limit_high_att2; // 1个字节
-    u8 base_high; //1个字节
-}S_Descriptor;
+    u32 low;
+    u32 high;
+}Descriptor;
 typedef struct Int_Descriptor
 {
     u16 low_off;
@@ -76,7 +72,7 @@ typedef struct TSS
     u32 DS;
     u32 FS;
     u32 GS;
-};
+}TSS;
 
 
 

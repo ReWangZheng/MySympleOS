@@ -1,11 +1,6 @@
 #ifndef CPROCESS
 #define CPROCESS
 #include "type.h"
-typedef struct PCB
-{
-    int p_size;
-    Process *head;
-}PCB;
 
 typedef struct Process
 {
@@ -25,8 +20,13 @@ typedef struct Process
     LDT ldt;
     u32 ldt_sel; //只用低16位
     int PID;
-    Process * next;
-};
+    struct Process * next;
+}Process;
+typedef struct PCB
+{
+    int p_size;
+    Process *head;
+}PCB;
 
 
 

@@ -32,4 +32,37 @@
 #define PAGE_CATALOG_ATTR 0x03
 #define PAGE_TABLE_ATTR 0x07
 #define PAGE__ATTR 0x07
+
+//描述符定义
+
+//粒度-->G
+#define UNIT_4KB 0x8000
+#define UNIT_1BY 0x0000
+
+//操作位-->D/B
+#define DB32 0x0400
+#define DB16 0x0000
+
+// 存在位-->P 
+#define P_OK 0x0080
+#define P_NO 0X0000
+
+// 特权级-->DPL
+#define DPL_0 0x0000
+#define DPL_1 0x0020
+#define DPL_2 0x0040
+#define DPL_3 0x0060
+
+//S
+#define S_DATA 0x0010
+#define S_CODE 0x0000
+// 类型符-->TYPE
+#define TYPE_DATA_R 0x0000
+#define TYPE_DATA_RW 0x0002
+#define TYPE_DATA_R_D 0x0004
+#define TYPE_DATA_RW_D 0x0006
+
+#define TYPE_LDT 0x0002
+
+
 #endif

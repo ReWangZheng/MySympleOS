@@ -13,5 +13,10 @@ void Init_8259();
 void SetInt(int num,u32 addr);
 
 //安装一个GDT描述符
-void SetUpGdtDescriptor(u32 des);
+u32 SetUpGdtDescriptor(Descriptor des);
+
+//制作一个描述符
+Descriptor make_descriptor(u32 address,u32 limit,u16 attr);
+
+
 #endif

@@ -13,7 +13,6 @@ _start:
     mov cx,100
     call cstart
     sti
-    call init_pagemode
-    mov ax,[0x0f025412]
+    mov ax,[0x1700444]
     jmp $
     ;0x3577a

@@ -1,6 +1,6 @@
 #ifndef PROCESS
 #define PROCESS
-#include "type.h"
-void LoadGdt(u32 * addr);
+#include "cprocess.h"
 
+void save_process_state(Process *addr);
 #endif

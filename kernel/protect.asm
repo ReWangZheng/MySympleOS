@@ -10,7 +10,6 @@ GetGDT:
     pop eax
     pop ebp
     ret
-
 global LoadGDT
 ;导出函数:LoadGdt(u32 *address)
 LoadGDT:

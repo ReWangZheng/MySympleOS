@@ -5,5 +5,5 @@
 void LoadGDT(GDT * addr);
 void LoadIDT(IDT * addr);
 void GetGDT(GDT * gdt);
-void LoadLDT(LDT * ldt);
+void LoadLDT(u32 ldt_sel);
 #endif
