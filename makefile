@@ -8,8 +8,9 @@ kernel_obj=kernel.o util.o start.o cutil.o \
 protect.o memory.o cprotect.o \
 cinterrupt.o interrupt.o \
 page.o cpage.o process.o\
+cprocess.o
 
-VPATH:=bin kernel include lib
+VPATH:=bin kernel include lib boot
 %.o:%.asm
 	nasm -f elf $^ -I $(asminclude) -o $(binhome)$@
 

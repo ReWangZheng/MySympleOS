@@ -24,7 +24,7 @@ void Init_8259(){
 }
 
 void Init_RTC(){
-
+    
 }
 
 void SetInt(int num,u32 addr){
@@ -47,13 +47,18 @@ u32 SetUpGdtDescriptor(Descriptor des){
     return sel;
 }
 
-void SetUpLdtDescriptor(LDT *ldt,u32 des){
-    u32 * ldtaddr = ((u32)ldt->ldt_high_addr<<16)|(ldt->ldt_low_addr);
-    
-    ldtaddr += ((gdt_ptr.gdt_len+1) / 8);
-    (*ldtaddr) = des;
+u32 SetUpLdtDescriptor(LDT *ldt,Descriptor des,u16 ldtsel){
+    u32 * ldtaddr = u16_and_u16(ldt->ldt_high_addr,ldt->ldt_low_addr);
+    ldtaddr += ((u16)(ldt->ldt_len+1) / (u16)4);
+
+    (*ldtaddr) = des.low;
+    (*(ldtaddr+1)) = des.high;
     ldt->ldt_len+=8;
-    LoadLDT(ldt);
+    //0x0000ffff
+    //0x008ff200
+    u32 sel = ((-1+(ldt->ldt_len+1) / 8)<<3);
+    LoadLDT(ldtsel);
+    return sel;
 }
 
 Descriptor make_descriptor(u32 address,u32 limit,u16 attr_){

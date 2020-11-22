@@ -123,6 +123,7 @@ start:
 [BITS	32]
 .protected_mode_start:
 	mov ax,Sele_Data_4GB
+	mov ss,ax
 	mov ds,ax
 	mov es,ax
 	mov esi,0x30000

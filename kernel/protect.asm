@@ -46,3 +46,35 @@ LoadLDT:
     pop eax
     pop ebp
     ret
+global getEAX
+global getEBX
+global getECX
+global getEDX
+global getESP
+global getSS
+global getDS
+global getCS
+
+getEAX:
+    ret
+getEBX:
+    mov eax,ebx
+    ret
+getECX:
+    mov eax,ecx
+    ret
+getEDX:
+    mov eax,edx
+    ret
+getESP:
+    mov eax,esp
+    ret
+getSS:
+    mov eax,ss
+    ret
+getDS:
+    mov eax,ds
+    ret
+getCS:
+    mov eax,cs
+    ret

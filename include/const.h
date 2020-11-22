@@ -40,7 +40,7 @@
 #define UNIT_1BY 0x0000
 
 //操作位-->D/B
-#define DB32 0x0400
+#define DB32 0x4000
 #define DB16 0x0000
 
 // 存在位-->P 

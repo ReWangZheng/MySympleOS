@@ -1,6 +1,8 @@
 extern CInterrupt_0
 extern exception_handle
-
+extern fetch
+extern timer
+extern getCurrentP
 global Interrupt_0
 global DE_ERR
 global TS_ERR
@@ -8,12 +10,43 @@ global NP_ERR
 global SS_ERR
 global GP_ERR
 global PF_ERR
+extern kernel_esp
+extern process_esp
+extern debug
 Interrupt_0:
     call CInterrupt_0
+    ;下面代码为进程切换代码
+    pushad   ;addr:0x35e80
+    add dword [esp+12],12
+    call getCurrentP
+    cmp eax,0
+    jz noprocess
+    ;得到当前运行的进程
+    mov ecx,11
+    xor edx,edx
+    xor ebx,ebx
+.save:
+    mov edx,[esp+ebx]
+    mov [eax+ebx],edx
+    add ebx,4
+    loop .save
+    ;sub dword [eax+12],12
+noprocess:
+    add esp,44
+    call fetch
+    mov esp,[eax+12];进入程序栈
+    add eax,40
+    mov ecx,11
+restory:
+    push dword [eax]
+    sub eax,4
+    loop restory
     mov al,20h
     mov dx,20h
     out dx,al
-    iret
+    popad
+    call debug
+    iretd
 ;除数为0  0x00
 DE_ERR:
     push 1
@@ -39,6 +72,19 @@ PF_ERR:
     push 6
     jmp exception
 exception:
+    call debug
     call exception_handle
     add esp,4*2;0x00000003577d
-    iret
+    iretd
+
+global getEFLAGE 
+getEFLAGE:
+    push ebp
+    mov ebp,esp
+    pushf
+    mov eax,[esp]
+    sti
+    popf
+    pop ebp
+    ret
+    

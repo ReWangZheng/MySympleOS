@@ -2,14 +2,28 @@
 #include "util.h"
 #include "const.h"
 #include "protect.h"
+#include "process.h"
 unsigned char times=0;
 unsigned int cur = 0;
-void  CInterrupt_0(){
-    //在切换前将现场首都保存下来
+extern IDT idt_ptr;
+extern PCB process_tab;
+int num=0;
 
+void  CInterrupt_0(){
+    show_str_format(0,20,"Interrupt 0 :%d",num++);
 }
 
+void  timer(){
+    show_str_format(0,21,"timer 0 :%d",num++);
+}
+
+
 void init_interrupt(){
+        //设置idt
+    idt_ptr.idt_len = IDT_LEN;
+    idt_ptr.idt_low_addr = IDT_ADDR;
+    idt_ptr.idt_high_addr = (IDT_ADDR>>16);
+    LoadIDT(&idt_ptr); //加载IDT
     SetInt(0,DE_ERR);
     SetInt(10,TS_ERR);
     SetInt(11,NP_ERR);
@@ -19,7 +33,9 @@ void init_interrupt(){
     Init_8259();
     SetInt(0x20,Interrupt_0);
 }
-char *mes[7]={
+
+void exception_handle(int code){
+    char *mes[7]={
     " ",
     "The divisor cannot be 0!",
     "TSS segment  valid",
@@ -28,10 +44,8 @@ char *mes[7]={
     "the memeory or protect mode check err ",
     "page err!"
 };
+    show_str_format(0,3,"err message: %s",mes[code]);
 
-void exception_handle(int code){
-    print("err message: ");
-    print(mes[code]);
     if(code==6){
         u32 addr;
         get_cr2(&addr);
