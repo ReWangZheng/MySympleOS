@@ -34,5 +34,5 @@ void initProcesTab();
 void AddProcess(Process *p);
 Process * fetch();
 void  InitProcess(Process * p,void * enter);
-
+Process * getCurrentP();
 #endif

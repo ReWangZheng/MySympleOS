@@ -54,7 +54,7 @@ global getESP
 global getSS
 global getDS
 global getCS
-
+global getEFLAGE 
 getEAX:
     ret
 getEBX:
@@ -77,4 +77,13 @@ getDS:
     ret
 getCS:
     mov eax,cs
+    ret
+getEFLAGE:
+    push ebp
+    mov ebp,esp
+    pushf
+    mov eax,[esp]
+    sti
+    popf
+    pop ebp
     ret

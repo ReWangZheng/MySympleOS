@@ -19,6 +19,5 @@ u32 SetUpLdtDescriptor(LDT *ldt,Descriptor des,u16 ldtsel);
 
 //制作一个描述符
 Descriptor make_descriptor(u32 address,u32 limit,u16 attr);
-
-
+void debug();
 #endif

@@ -1,6 +1,6 @@
 ;用来保存寄存器信息的方法
 esp_offset equ 40
-global show_str_format 
+global save_process_state 
 save_process_state:
     ;参数:Process的首地址
     push eax

@@ -17,10 +17,10 @@ Interrupt_0:
     call CInterrupt_0
     ;下面代码为进程切换代码
     pushad   ;addr:0x35e80
-    add dword [esp+12],12
     call getCurrentP
     cmp eax,0
     jz noprocess
+    add dword [esp+12],12
     ;得到当前运行的进程
     mov ecx,11
     xor edx,edx
@@ -32,8 +32,10 @@ Interrupt_0:
     loop .save
     ;sub dword [eax+12],12
 noprocess:
-    add esp,44
     call fetch
+    cmp eax,0
+    jz end
+    add esp,44
     mov esp,[eax+12];进入程序栈
     add eax,40
     mov ecx,11
@@ -41,12 +43,13 @@ restory:
     push dword [eax]
     sub eax,4
     loop restory
+end:
     mov al,20h
     mov dx,20h
     out dx,al
     popad
-    call debug
     iretd
+
 ;除数为0  0x00
 DE_ERR:
     push 1
@@ -72,19 +75,9 @@ PF_ERR:
     push 6
     jmp exception
 exception:
-    call debug
     call exception_handle
     add esp,4*2;0x00000003577d
     iretd
 
-global getEFLAGE 
-getEFLAGE:
-    push ebp
-    mov ebp,esp
-    pushf
-    mov eax,[esp]
-    sti
-    popf
-    pop ebp
-    ret
+
     

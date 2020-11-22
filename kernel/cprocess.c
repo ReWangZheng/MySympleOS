@@ -24,6 +24,7 @@ void AddProcess(Process *p){
 }
 int number = 10;
 Process * fetch(){
+    show_str_format(0,0,"%d process are running.....",process_tab.p_size);
     if(process_tab.cursor==0){
         Process * res = process_tab.head;
         process_tab.cursor = res;
@@ -32,13 +33,11 @@ Process * fetch(){
         Process * res;    
         process_tab.cursor = process_tab.cursor->next;
         res = process_tab.cursor;
-        show_str_format(0,12,"fetch PID:%d %x",res,number++);
         return res;
     }
 }
 void debug(){
     u32 *esp = getESP();
-
     show_str_format(0,2,"eax:%x ebx:%x ecx:%x edx:%x esp:%x   ",getEAX(),getEBX(),getECX(),getEDX(),getESP());
     show_str_format(0,1,"ds:%x cs:%x ss:%x    ",getDS(),getCS(),getSS());
     show_str_format(10,0,"stack: %x %x %x",*(esp),*(esp+1),*(esp+2));
@@ -47,7 +46,7 @@ void debug(){
 
 
 void  InitProcess(Process * p,void * enter){
-    //初始化寄存器
+    //初始,0,化寄存器
     p->EAX = 0;
     p->EBX = 0;
     p->ECX = 0;
@@ -73,6 +72,5 @@ void  InitProcess(Process * p,void * enter){
 
 int nub1=0;
 Process * getCurrentP(){
-    show_str_format(4,0,"get times %d",nub1++);
     return process_tab.cursor;
 }
