@@ -19,7 +19,7 @@ void SYSTERM_INIT(){
     LoadGDT(&gdt_ptr); //000000000003519a
     init_interrupt(); //初始化中断
     init_pagemode(); //初始化分页模式
-    initProcesTab();
+    initProcesTab(); //初始化进程表
     InitProcess(&kernel,__kernel__); //初始化进程
 }
 

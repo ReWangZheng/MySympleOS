@@ -4,13 +4,13 @@ binhome=/home/regan/code/os_project/bin/
 bootinclude=boot/include/
 asminclude=include/
 CFLAGS=-m32 -c
-kernel_obj=kernel.o util.o start.o cutil.o \
+kernel_obj=kernel.o util.o System.o cutil.o \
 protect.o memory.o cprotect.o \
 cinterrupt.o interrupt.o \
 page.o cpage.o process.o\
 cprocess.o ckernel.o cmemory.o\
 
-VPATH:=bin kernel include lib boot
+VPATH:=bin kernel/C kernel/ASM include lib/C lib/ASM boot
 %.o:%.asm
 	nasm -f elf $^ -I $(asminclude) -o $(binhome)$@
 
