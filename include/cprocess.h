@@ -15,14 +15,16 @@ typedef struct Process
     u32 EIP;
     u32 CS;
     u32 EFLAGE;
-    TSS tss; // <----esp+4
+    TSS *tss; // <----esp+4
     u32 tss_sel; 
-    LDT ldt;
+    LDT *ldt;
     u32 ldt_sel; //只用低16位
     int PID;
+    u32 * page_catalog;
     struct Process * next;
-    void * debug;
 }Process;
+
+
 typedef struct PCB
 {
     int p_size;
@@ -35,4 +37,5 @@ void AddProcess(Process *p);
 Process * fetch();
 void  InitProcess(Process * p,void * enter);
 Process * getCurrentP();
+void initTSS(TSS * tss);
 #endif

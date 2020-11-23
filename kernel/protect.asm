@@ -46,6 +46,16 @@ LoadLDT:
     pop eax
     pop ebp
     ret
+LoadTSS:
+    push ebp
+    mov ebp,esp
+    push eax
+    mov eax,[ebp+8]
+    ltr ax
+    pop eax
+    pop ebp
+    ret
+
 global getEAX
 global getEBX
 global getECX
@@ -85,5 +95,19 @@ getEFLAGE:
     mov eax,[esp]
     sti
     popf
+    pop ebp
+    ret
+global get_cr2
+get_cr2:
+    ;参数1：目标地址
+    push ebp
+    mov ebp,esp
+    push eax
+    push edi
+    mov edi,[ebp+8]
+    mov eax,cr2
+    mov [edi],eax
+    pop edi
+    pop eax
     pop ebp
     ret

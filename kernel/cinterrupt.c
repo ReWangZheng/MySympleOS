@@ -8,15 +8,9 @@ unsigned int cur = 0;
 extern IDT idt_ptr;
 extern PCB process_tab;
 int num=0;
-
 void  CInterrupt_0(){
     show_str_format(0,20,"Interrupt 0 :%d",num++);
 }
-
-void  timer(){
-    show_str_format(0,21,"timer 0 :%d",num++);
-}
-
 
 void init_interrupt(){
         //设置idt
@@ -43,9 +37,8 @@ void exception_handle(int code){
     "Stack Segment err",
     "the memeory or protect mode check err ",
     "page err!"
-};
-    show_str_format(0,3,"err message: %s",mes[code]);
-
+    };
+    show_str_format(0,1,"err message: %s",mes[code]);
     if(code==6){
         u32 addr;
         get_cr2(&addr);

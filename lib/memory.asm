@@ -1,6 +1,8 @@
 ;导出函数
 global memcpy
 ;void* memcpy(void * des,void* source,int sizes); 函数原型
+global start_allocate
+start_allocate dd 0x100000 ;内存分配的起始地址
 memcpy:
 	;参数1：目标地址
 	;参数2：源地址

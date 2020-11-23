@@ -32,23 +32,26 @@ u32 allocate_page(){
 }
 
 void AddPageOnadd(u32 addr){
+    //得到页的数
     int pagecount = addr / 4096; 
+    //得到页在table中的index
     int table_index = pagecount / 1024;
-
+    //得到在页表中的page_index
     int page_index = pagecount % 1024;
-
+    //先判断一下目录表是否为NULL
     if(page_catalog[table_index]==0){
         u32  tab = allocate_page();
-        page_catalog[table_index] = PAGDRR(tab) | PAGE_TABLE_ATTR;
-
+        u32 *tab_addr = ((u32)0xFFFFF000+(u32)(table_index*4));
+        (*tab_addr) = PAGDRR(tab) | PAGE_TABLE_ATTR;
     }
+    //得到页目录的线性地址
     u32 * page_addr = (u32*)(0xFFC00000+(table_index<<12)+page_index*4);
+    //得到一个分配的页表
     u32 addr_allocated = allocate_page();
     (*page_addr) = PAGDRR(addr_allocated) | PAGE__ATTR; 
-    //table[table_index][page_index] = PAGDRR(addr_allocated) | PAGE__ATTR;
-
 }
 
+//判断页是否被分配
 int IsAllocated(int cursor){
     int byte_index = cursor / 8;
     int bit_index = cursor % 8;
@@ -60,6 +63,8 @@ int IsAllocated(int cursor){
         return 0;
     }
 }
+
+//设置Bitmap
 void SetAllocated(int cursor,int flag){
     int byte_index = cursor / 8;
     int bit_index = cursor % 8;
@@ -73,9 +78,9 @@ void SetAllocated(int cursor,int flag){
         u8 mask = (1<<bit_index);
         page_bitmap[byte_index] = page_bitmap[byte_index] | mask;       
     }
-
 }
 
+//开启分页模式
 void init_pagemode(){
     for(int j=0;j<1024;j++){
         page_catalog[j] = 0x00;

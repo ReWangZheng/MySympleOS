@@ -1,38 +1,3 @@
-;导出函数
-global display_str
-;void display_str(char *str,int x,int y)
-display_str:
-	;参数1：串的地址
-	;参数2：显示坐标列
-    ;参数3：显示的坐标行
-	push ebp
-	mov ebp,esp
-    pushad
-    ;设置显存
-    mov ax,0x18
-    mov es,ax
-    ;首先计算行开始的字节
-    mov eax,[ss:ebp+16]
-    mov bx,160
-    mul bx
-    add dword eax,[ss:ebp+12]
-    add dword eax,[ss:ebp+12]
-    mov edi,eax
-    mov esi,[ss:ebp+8] ;串地址
-    mov ah,0x07
-.read_str:
-    mov al,[esi]
-	cmp al,0
-    jz .end
-    ;下面正常显示字符
-    mov [es:edi],ax
-    add edi,2
-    inc esi
-    jmp .read_str
-.end:
-    popad
-    pop ebp
-    ret
 ;--------------------------------------
 global getcursor
 ;u16 getcursor()
@@ -149,18 +114,3 @@ clear:
     pop eax
     pop ebx
     ret
-global get_cr2
-get_cr2:
-    ;参数1：目标地址
-    push ebp
-    mov ebp,esp
-    push eax
-    push edi
-    mov edi,[ebp+8]
-    mov eax,cr2
-    mov [edi],eax
-    pop edi
-    pop eax
-    pop ebp
-    ret
-    
