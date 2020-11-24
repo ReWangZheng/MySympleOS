@@ -9,7 +9,7 @@ extern IDT idt_ptr;
 extern PCB process_tab;
 int num=0;
 void  CInterrupt_0(){
-    show_str_format(0,20,"Interrupt 0 :%d",num++);
+    show_str_format(0,3,"Interrupt 0 :%d",num++);
 }
 
 void init_interrupt(){

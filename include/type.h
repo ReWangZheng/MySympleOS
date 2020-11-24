@@ -54,7 +54,6 @@ typedef struct TSS
     u32 SS1;
     u32 ESP2;
     u32 SS2;
-
     u32 CR3;
     u32 EIP;
     u32 EFLAGE;

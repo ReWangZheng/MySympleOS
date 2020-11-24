@@ -23,8 +23,9 @@ Interrupt_0:
     ;标记一下中断数量
     inc eax
     mov dword [int_times],eax
+    ;开中断
     sti
-    ;通知处理器可以接受中断了s
+    ;通知处理器可以接受中断了
     mov al,20h
     mov dx,20h
     out dx,al
@@ -34,11 +35,30 @@ Interrupt_0:
     call getCurrentP
     cmp eax,0
     jz noprocess
+    ;将esp恢复一下
     add dword [esp+12],12
+    ;下面保护段寄存器
+    push gs;
+    push fs;
+    push ss;
+    push es;
+    push ds;
+    ;..................
+    ;将段寄存器的值存到Process结构体中
+    mov ecx,5
+    xor edx,edx
+    xor ebx,ebx
+    mov ebx,68
+.save_seg:
+    pop edx
+    and edx,0x0000ffff
+    mov dword [eax+ebx],edx
+    add ebx,4
+    loop .save_seg
+    ;下面保存popad中的寄存器值
     mov ecx,11
     xor edx,edx
     xor ebx,ebx
-    ;开始保存现场
 .save:
     mov edx,[esp+ebx]
     mov [eax+ebx],edx
@@ -52,8 +72,10 @@ noprocess:
     mov ebx,[eax+64]
     mov cr3,ebx
     ;进入程序栈
+    ;将之前的堆栈清除掉
     add esp,44
     mov esp,[eax+12]
+    ;指针指向EFLAGE
     add eax,40
     mov ecx,11
     ;恢复堆栈
@@ -61,7 +83,19 @@ restory:
     push dword [eax]
     sub eax,4
     loop restory
+    ;将指针指向ds
+    add eax,72
+    mov ecx,5
+restory_seg:
+    push dword [eax]
+    add eax,4
+    loop restory_seg
 end:
+    pop gs
+    pop fs
+    pop ss
+    pop es
+    pop ds
     popad
     ;设置标记为0
     mov dword [int_times],0
