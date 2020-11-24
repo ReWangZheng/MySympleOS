@@ -65,16 +65,30 @@ Interrupt_0:
     add ebx,4
     loop .save
 noprocess:
+    ;问题1：为什么edx的值会发生变化？？
+    push eax
     call fetch
+    pop edx
     cmp eax,0
     jz end
+    ;判断两个进程是不是相同的，相同则没必要重新加载页目录和IDT、TSS了
+    cmp eax,edx
+    jz restory_start
     ;下面是要重新加载页目录
     mov ebx,[eax+64]
-    mov cr3,ebx
-    ;进入程序栈
+    mov cr3,ebx ;0008:0000000000035c6a
+    ;下面开始加载LDT
+    mov ebx,[eax+56] ;得到ldt的选择子
+    lldt bx
+    ;下面开始加载TSS
+    mov ebx,[eax+48] ;得到tss的选择子
+    ltr bx
+restory_start:
     ;将之前的堆栈清除掉
     add esp,44
+    ;进入程序栈
     mov esp,[eax+12]
+    mov ss,[eax+76]
     ;指针指向EFLAGE
     add eax,40
     mov ecx,11

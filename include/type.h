@@ -49,11 +49,11 @@ typedef struct TSS
 {
     u32 * tss_pre;
     u32 ESP0;
-    u32 SS0;
+    u32 SS0_sel;
     u32 ESP1;
-    u32 SS1;
+    u32 SS1_sel;
     u32 ESP2;
-    u32 SS2;
+    u32 SS2_sel;
     u32 CR3;
     u32 EIP;
     u32 EFLAGE;
@@ -65,12 +65,14 @@ typedef struct TSS
     u32 EBP;
     u32 ESI;
     u32 EDI;
-    u32 ES;
-    u32 CS;
-    u32 SS;
-    u32 DS;
-    u32 FS;
-    u32 GS;
+    u32 ES_sel;
+    u32 CS_sel;
+    u32 SS_sel;
+    u32 DS_sel;
+    u32 FS_sel;
+    u32 GS_sel;
+    u32 LDT_sel;
+    u32 IOOP;
 }TSS;
 
 

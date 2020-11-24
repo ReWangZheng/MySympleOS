@@ -62,6 +62,8 @@
 #define TYPE_DATA_R_D 0x0004
 #define TYPE_DATA_RW_D 0x0006
 
+#define TYPE_TSS 0x0009
+
 #define TYPE_LDT 0x0002
 
 

@@ -20,6 +20,6 @@ void SYSTERM_INIT(){
     init_interrupt(); //初始化中断
     init_pagemode(); //初始化分页模式
     initProcesTab(); //初始化进程表
-    InitProcess(&kernel,__kernel__); //初始化进程
+    InitProcess(&kernel,__kernel__,DPL_0); //初始化进程
 }
 

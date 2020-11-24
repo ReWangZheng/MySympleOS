@@ -47,17 +47,15 @@ u32 SetUpGdtDescriptor(Descriptor des){
     return sel;
 }
 
-u32 SetUpLdtDescriptor(LDT *ldt,Descriptor des,u16 ldtsel){
+u32 SetUpLdtDescriptor(LDT *ldt,Descriptor des){
     u32 * ldtaddr = u16_and_u16(ldt->ldt_high_addr,ldt->ldt_low_addr);
     ldtaddr += ((u16)(ldt->ldt_len+1) / (u16)4);
-
     (*ldtaddr) = des.low;
     (*(ldtaddr+1)) = des.high;
     ldt->ldt_len+=8;
     //0x0000ffff
     //0x008ff200
-    u32 sel = ((-1+(ldt->ldt_len+1) / 8)<<3);
-    LoadLDT(ldtsel);
+    u32 sel = ((-1+(ldt->ldt_len+1) / 8)<<3)|4;
     return sel;
 }
 

@@ -15,7 +15,7 @@ void SetInt(int num,u32 addr);
 
 //安装一个GDT描述符
 u32 SetUpGdtDescriptor(Descriptor des);
-u32 SetUpLdtDescriptor(LDT *ldt,Descriptor des,u16 ldtsel);
+u32 SetUpLdtDescriptor(LDT *ldt,Descriptor des);
 
 //制作一个描述符
 Descriptor make_descriptor(u32 address,u32 limit,u16 attr);

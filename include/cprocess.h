@@ -33,6 +33,7 @@ typedef struct Process
 /*20*/  
     u32 fs;
     u32 gs;
+    u32 DPL;
     //下一个进程
     struct Process * next;
 }Process;
@@ -48,7 +49,7 @@ typedef struct PCB
 void initProcesTab();
 void AddProcess(Process *p);
 Process * fetch();
-void  InitProcess(Process * p,void * enter);
+void  InitProcess(Process * p,void * enter,u32 DPL);
 Process * getCurrentP();
 void initTSS(TSS * tss);
 #endif
