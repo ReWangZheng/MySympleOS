@@ -114,6 +114,9 @@ end:
     ;设置标记为0
     mov dword [int_times],0
     iretd
+
+
+
 ;除数为0  0x00
 DE_ERR:
     pushad

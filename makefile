@@ -15,7 +15,7 @@ VPATH:=bin kernel/C kernel/ASM include lib/C lib/ASM boot
 	nasm -f elf $^ -I $(asminclude) -o $(binhome)$@
 
 %.o: %.c
-	gcc -I $(asminclude) -m32 -c -fno-stack-protector $^ -o $(binhome)$@
+	gcc -w -I $(asminclude) -m32 -c -fno-stack-protector $^ -o $(binhome)$@
 
 boot.bin: boot.asm
 	nasm $^ -I $(bootinclude) -o $(binhome)$@

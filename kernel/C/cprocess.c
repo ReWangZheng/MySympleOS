@@ -41,6 +41,7 @@ Process * fetch(){
 }
 //初始化进程
 void  InitProcess(Process * p,void * enter,u32 DPL){
+
     /*下面开始初始化进程信息*/
     p->EAX = 0;
     p->EBX = 0;
@@ -62,7 +63,7 @@ void  InitProcess(Process * p,void * enter,u32 DPL){
 
     /*下面开始配置页目录*/
     //为页目录开辟空间，放在系统内存中
-    p->page_catalog = malloc(4096); 
+    p->page_catalog = malloc_4096_align();
     //将内核页目录的前一半拷贝给新页表
     memcpy(p->page_catalog,page_catalog,4096/2); 
      //更换页目录
@@ -72,6 +73,8 @@ void  InitProcess(Process * p,void * enter,u32 DPL){
     *(page_catalog+1024) = *(page_catalog+1024);
     //加载页目录，并且初始化堆栈空间
     loda_page_catelog(page_catalog);
+    show_str_format(8,8,"p_s:%x %d",loda_page_catelog,p->PID);
+
     //初始化堆栈空间
     for(int i = 0x80000000;i<0x80020000;i=i+0x1000){
         AddPageOnadd((u32)i);
@@ -129,7 +132,6 @@ void  InitProcess(Process * p,void * enter,u32 DPL){
     //装载LDT到GDT中
     Descriptor ldt_des = make_descriptor(0x80020000,p->ldt->ldt_len,UNIT_1BY|P_OK|p->DPL|TYPE_LDT);
     p->ldt_sel = SetUpGdtDescriptor(ldt_des);
-    
     //制作TSS描述符，并且将其安装到GDT中
     Descriptor tss_des = make_descriptor(p->tss,103,UNIT_1BY|P_OK|DPL|TYPE_TSS);
     p->tss_sel = SetUpGdtDescriptor(tss_des); 

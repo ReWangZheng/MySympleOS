@@ -7,3 +7,16 @@ u32 * malloc(int len){
     start_allocate = start_allocate + (len);
     return res;
 }
+
+u32 * malloc_4096_align(){
+    u32 mo = start_allocate % 4096;
+    u32 res = start_allocate &0xfffff000;
+    if(mo>0){
+        start_allocate =res + 0x1000;
+    }
+    u32 * r =(u32*)start_allocate;
+    start_allocate = start_allocate + 0x1000;
+    (*r) = 0;
+    *(r+1025) = 0;
+    return r;
+}
