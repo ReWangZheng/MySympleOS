@@ -12,14 +12,22 @@ IDT idt_ptr;
 int gdt_size=0;
 Process kernel; //内核进程
 Process p; //内核进程
+Process p2; 
 void show(){
     int number = 0;
     while (1)
     {
-        show_str_format(0,5,"process2:%d",number++);
+        show_str_format(0,5,"process1:%d",number++);
     }
-    
 }
+void show2(){
+    int number = 0;
+    while (1)
+    {
+        show_str_format(0,6,"process2:%d",number++);
+    }
+}
+
 int __kernel__();
 void SYSTERM_INIT(){
     GDT old_gdt;
@@ -30,6 +38,7 @@ void SYSTERM_INIT(){
     init_pagemode(); //初始化分页模式
     initProcesTab(); //初始化进程表
     InitProcess(&kernel,__kernel__,DPL_0); //初始化进程
-    InitProcess(&p,show,DPL_0);
+    InitProcess(&p,show,DPL_0); //初始化进程
+    InitProcess(&p2,show2,DPL_0); //初始化进程
 }
 

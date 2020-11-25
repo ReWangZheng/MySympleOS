@@ -9,8 +9,8 @@ extern u32 * page_table_4MB;
 u8 page_bitmap[16384]; // 0x38060
 int bitmap_cursor;
 void init_bitmap(){
-    bitmap_cursor = 256;
-    for(int i = 0;i<32;i++){
+    bitmap_cursor = 512;
+    for(int i = 0;i<64;i++){
         page_bitmap[i] = 0xff;
     }
     for(int i = 32;i<16384;i++){
@@ -86,7 +86,7 @@ void init_pagemode(){
         page_catalog[j] = 0x00;
     }
     for(int i=0;i<1024;i++){
-        if(i<256)
+        if(i<512)
             page_table_4MB[i] = PAGDRR(0x1000*i) | PAGE__ATTR;
         else
             page_table_4MB[i] = 0x00;

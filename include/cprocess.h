@@ -44,6 +44,7 @@ typedef struct PCB
     int p_size;
     Process *head;
     Process *cursor;
+    TSS * tss;
 }PCB;
 
 void initProcesTab();
@@ -51,5 +52,5 @@ void AddProcess(Process *p);
 Process * fetch();
 void  InitProcess(Process * p,void * enter,u32 DPL);
 Process * getCurrentP();
-void initTSS(TSS * tss);
+void initTSS(u32 ss0,u32 esp0,u32 ss1,u32 esp1,u32 ss2,u32 esp2);
 #endif

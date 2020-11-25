@@ -9,8 +9,8 @@
 	%include "load.inc"
 	
 	LABEL_GDT:	Descriptor	0,0,0	;空描述符
-	LABEL_CODE_4GB: Descriptor 0,0xfffff,DA_CR|DA_32|DA_LIMIT_4K;4GB代码段描述符
-	LABEL_DATA_4GB: Descriptor 0,0xfffff,DA_DRW|DA_32|DA_LIMIT_4K;4GB数据段描述符
+	LABEL_CODE_4GB: Descriptor 0,0xfffff,DA_CR|DA_32|DA_LIMIT_4K|DA_DPL3;4GB代码段描述符
+	LABEL_DATA_4GB: Descriptor 0,0xfffff,DA_DRW|DA_32|DA_LIMIT_4K|DA_DPL3;4GB数据段描述符
 	LABEL_VADIO:Descriptor 0xb8000,0xffff,DA_DRW|DA_DPL3;显存空间
 	
 	GDT_LEN equ $-LABEL_GDT

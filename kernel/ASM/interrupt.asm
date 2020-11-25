@@ -13,6 +13,7 @@ global PF_ERR
 extern kernel_esp
 extern process_esp
 extern debug
+extern gdt_ptr
 int_times dd 0 
 Interrupt_0:
     pushad   ;addr:0x35e80
@@ -80,15 +81,12 @@ noprocess:
     ;下面开始加载LDT
     mov ebx,[eax+56] ;得到ldt的选择子
     lldt bx
-    ;下面开始加载TSS
     mov ebx,[eax+48] ;得到tss的选择子
-    ltr bx
 restory_start:
     ;将之前的堆栈清除掉
     add esp,44
     ;进入程序栈
     mov esp,[eax+12]
-    mov ss,[eax+76]
     ;指针指向EFLAGE
     add eax,40
     mov ecx,11
@@ -114,9 +112,6 @@ end:
     ;设置标记为0
     mov dword [int_times],0
     iretd
-
-
-
 ;除数为0  0x00
 DE_ERR:
     pushad

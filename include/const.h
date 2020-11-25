@@ -66,5 +66,12 @@
 
 #define TYPE_LDT 0x0002
 
+#define TYPE_CODE_X 0X0008
+#define TYPE_CODE_RX 0X000a
+#define TYPE_CODE_XY 0X000c
+#define TYPE_CODE_RXY 0X00e
+
+
+
 
 #endif

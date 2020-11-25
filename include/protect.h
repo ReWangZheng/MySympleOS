@@ -15,4 +15,5 @@ u32 getSS();
 u32 getDS();
 u32 getCS();
 u32 getEFLAGE();
+void LoadTSS();
 #endif

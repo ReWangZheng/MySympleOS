@@ -17,6 +17,6 @@ u32 * malloc_4096_align(){
     u32 * r =(u32*)start_allocate;
     start_allocate = start_allocate + 0x1000;
     (*r) = 0;
-    *(r+1025) = 0;
+    
     return r;
 }

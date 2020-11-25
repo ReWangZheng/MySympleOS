@@ -46,6 +46,7 @@ LoadLDT:
     pop eax
     pop ebp
     ret
+global LoadTSS
 LoadTSS:
     push ebp
     mov ebp,esp
