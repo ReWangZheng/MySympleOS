@@ -3,6 +3,7 @@
 #include "cmemory.h"
 #include "buffer.h"
 #include "util.h"
+#include "ctime.h"
 #define KEYBUFF_MAXLEN 200
 Buffer *key_buffer;
 void InitKeyBuf(){
@@ -21,13 +22,17 @@ int keybuffersize(){
 }
 
 void KeyProcess_enter(){
+    InitKeyBuf();
+    int number = 0;
     while (1)
     {
         KeyCode code = fetch_code();
         if(code==0){
             continue;            
         }
-        show_str_format(0,4,"the key code:%x",code);
+        show_str_format(0,4,"%x ",code);
+        
+        number+=5;
     }
 }
 

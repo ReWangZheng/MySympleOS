@@ -4,6 +4,7 @@
 #include "const.h"
 #include "cmemory.h"
 #include "page.h"
+#include "Interrupt.h"
 #define PAGDRR(x) ((u32)(x))&0xfffff000
 PCB process_tab;
 extern u32* page_catalog;
@@ -42,6 +43,7 @@ Process * fetch(){
 }
 //初始化进程
 void  RunProcess(Process * p,void * enter,u32 DPL){
+    close_int();
     /*下面开始初始化进程信息*/
     p->EAX = 0;
     p->EBX = 0;
@@ -128,6 +130,7 @@ void  RunProcess(Process * p,void * enter,u32 DPL){
     p->ldt_sel = SetUpGdtDescriptor(ldt_des);
     /***************/
     AddProcess(p);
+    open_int();
 }
 //初始TSS
 void initTSS(u32 ss0,u32 esp0,u32 ss1,u32 esp1,u32 ss2,u32 esp2){

@@ -11,7 +11,7 @@ Buffer* MakeBuffer(int bufsize){
 #include "util.h"
 void append(Buffer* buffer,u8 code){
     //判断缓冲区满了没有
-    show_str_format(0,3,"max_size:%d r:%d  a:%d  ",buffer->max_size,buffer->read_cursor+1,buffer->append_cursor);
+    show_str_format(0,3,"max_size:%d r:%d  a:%d  ",buffer->max_size,buffer->read_cursor,buffer->append_cursor);
     if(buffer->size>=buffer->max_size){
         return;
     }
@@ -21,7 +21,7 @@ void append(Buffer* buffer,u8 code){
 }
 
 u8 get(Buffer * buffer){
-    if(buffer->read_cursor ==-1||buffer->read_cursor == buffer->append_cursor){
+    if(buffer->size==0){
         return 0;
     }
     buffer->read_cursor = (buffer->read_cursor+1) % buffer->max_size;

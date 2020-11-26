@@ -4,7 +4,6 @@
 #include "keybord.h"
 #include "const.h"
 #include "page.h"
-#include "Interrupt.h"
 #include "protect.h"
 Process keybod_process;
 Process p;
@@ -16,12 +15,7 @@ void show3(){
     }
 }
 int __kernel__(){
-    show_str_format(0,15,"the kernel task start running ");
-
-    InitKeyBuf();
-    close_int();
-    RunProcess(&p,show3,0);
-    open_int();
+    RunProcess(&keybod_process,KeyProcess_enter,0); //运行键盘处理进程
     int number = 0;
     while (1){
         sleep(1000);
