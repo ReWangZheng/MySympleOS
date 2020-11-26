@@ -3,7 +3,7 @@
 #include "const.h"
 #include "protect.h"
 #include "process.h"
-#include "keybord.h"
+#include "ckeyboard.h"
 unsigned char times=0;
 unsigned int cur = 0;
 extern IDT idt_ptr;
@@ -19,7 +19,7 @@ void keybordHandle(){
     //得到键盘扫描码
     KeyCode code = in_byte(0x60);
     append_code(code);
-    show_str_format(0,7,"%d",keybuffersize());
+    show_str_format(0,7,"%x",code);
 }
 void init_interrupt(){
     //设置idt

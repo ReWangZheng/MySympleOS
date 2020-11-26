@@ -8,7 +8,7 @@
 #include "protect.h"
 #include "process.h"
 #include "ctime.h"
-#include "keybord.h"
+#include "ckeyboard.h"
 GDT gdt_ptr;
 IDT idt_ptr;
 int gdt_size=0;

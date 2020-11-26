@@ -1,7 +1,7 @@
 #include "process.h"
 #include "util.h"
 #include "ctime.h"
-#include "keybord.h"
+#include "ckeyboard.h"
 #include "const.h"
 #include "page.h"
 #include "protect.h"

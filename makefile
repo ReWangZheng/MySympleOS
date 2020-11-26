@@ -9,7 +9,7 @@ protect.o memory.o cprotect.o \
 cinterrupt.o interrupt.o \
 page.o cpage.o process.o\
 cprocess.o ckernel.o cmemory.o \
-time.o ckeybord.o buffer.o\
+time.o ckeyboard.o buffer.o\
 
 VPATH:=bin kernel/C kernel/ASM kernel/keybord include lib/C lib/ASM boot
 %.o:%.asm
