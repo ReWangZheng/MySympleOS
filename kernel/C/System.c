@@ -7,6 +7,7 @@
 #include "page.h"
 #include "protect.h"
 #include "process.h"
+#include "ctime.h"
 GDT gdt_ptr;
 IDT idt_ptr;
 int gdt_size=0;
@@ -17,19 +18,14 @@ void show(){
     int number = 0;
     while (1)
     {
-        show_str_format(0,5,"process1:%d",number++);
+        sleep(1000);
+        show_str_format(0,5,"the System has ran %d seconds",number++);
     }
 }
-void show2(){
-    int number = 0;
-    while (1)
-    {
-        show_str_format(0,6,"process2:%d",number++);
-    }
-}
-
+unsigned int ticks;
 int __kernel__();
 void SYSTERM_INIT(){
+    ticks = 0;
     GDT old_gdt;
     GetGDT(&old_gdt);
     memcpy(&gdt_ptr,&old_gdt,6);
@@ -39,6 +35,5 @@ void SYSTERM_INIT(){
     initProcesTab(); //初始化进程表
     InitProcess(&kernel,__kernel__,DPL_0); //初始化进程
     InitProcess(&p,show,DPL_0); //初始化进程
-    InitProcess(&p2,show2,DPL_0); //初始化进程
 }
 

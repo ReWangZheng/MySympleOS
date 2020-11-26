@@ -8,12 +8,12 @@ unsigned int cur = 0;
 extern IDT idt_ptr;
 extern PCB process_tab;
 int num=0;
+int ticks;
 void  CInterrupt_0(){
-    show_str_format(0,3,"Interrupt 0 :%d",num++);
+    ticks++;
 }
-
 void init_interrupt(){
-        //设置idt
+    //设置idt
     idt_ptr.idt_len = IDT_LEN;
     idt_ptr.idt_low_addr = IDT_ADDR;
     idt_ptr.idt_high_addr = (IDT_ADDR>>16);

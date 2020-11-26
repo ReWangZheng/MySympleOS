@@ -1,5 +1,6 @@
 #include "process.h"
 #include "util.h"
+#include "ctime.h"
 int __kernel__(){
     int number = 0;
     while (1){

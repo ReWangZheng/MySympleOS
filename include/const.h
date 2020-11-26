@@ -71,6 +71,20 @@
 #define TYPE_CODE_XY 0X000c
 #define TYPE_CODE_RXY 0X00e
 
+//设置定时器
+#define COUNTER0_PORT 0x40
+#define COUNTER1_PORT 0x41
+#define COUNTER2_PORT 0x42 
+#define TIMEMODE_PORT 0x43
+#define COUNTER0 0x00
+#define COUNTER1 0x40
+#define COUNTER2 0x80
+#define MODE_GENERATOR 0x04 
+#define OP_LOCAK 0x00
+#define OP_W_H 0x10
+#define OP_W_L 0x20
+#define OP_W_LH 0x30
+#define UNIT_INT 16931
 
 
 
