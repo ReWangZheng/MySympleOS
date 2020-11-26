@@ -66,6 +66,7 @@ void  InitProcess(Process * p,void * enter,u32 DPL){
     //将内核页目录的前一半拷贝给新页表
     memcpy(p->page_catalog,page_catalog,4096/2); 
      //更换页目录
+    u32 * old_page = page_catalog;
     page_catalog = p->page_catalog;
     //设在页目录的最后一项
     page_catalog[1023] = PAGDRR(page_catalog) | PAGE_TABLE_ATTR;
@@ -128,6 +129,7 @@ void  InitProcess(Process * p,void * enter,u32 DPL){
     p->ldt_sel = SetUpGdtDescriptor(ldt_des);
     /***************/
     AddProcess(p);
+
 }
 //初始TSS
 void initTSS(u32 ss0,u32 esp0,u32 ss1,u32 esp1,u32 ss2,u32 esp2){

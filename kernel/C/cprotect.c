@@ -17,10 +17,9 @@ void Init_8259(){
 
     out_byte(MASTER_8259_PORT2,ICW4);
     out_byte(CASCADE_8259_PORT2,ICW4);
-
     //开启定时器中断
-    out_byte(MASTER_8259_PORT2,OCW1_MAST);
-    out_byte(CASCADE_8259_PORT2,OCW1_CASCADE);  
+    out_byte(MASTER_8259_PORT2,OCW1_MAST); //在主片上开启时钟中断和键盘中断
+    out_byte(CASCADE_8259_PORT2,OCW1_CASCADE);//在从片上屏蔽所有中断
     //初始化定时器 1ms产生一次中断
     out_byte(TIMEMODE_PORT,COUNTER0|OP_W_LH|MODE_GENERATOR);
     out_byte(COUNTER0_PORT,(u8)UNIT_INT);

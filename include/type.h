@@ -76,7 +76,7 @@ typedef struct TSS
 }TSS;
 
 
-
+typedef  u8 KeyCode;
 
 
 #endif

@@ -85,7 +85,7 @@ in_byte:
     push ebp
     mov ebp,esp
     push edx
-    mov dx,[ebp+8]
+    mov edx,[ebp+8]
     xor eax,eax
     in al,dx
     nop

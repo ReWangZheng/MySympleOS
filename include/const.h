@@ -15,7 +15,7 @@
 
 #define ICW4 0x01 //
 
-#define OCW1_MAST 0Xfe // 仅开启时钟中断
+#define OCW1_MAST 0Xfc // 仅开启时钟中断
 #define OCW1_CASCADE 0xff //关闭从片所有中断
 
 
@@ -86,6 +86,7 @@
 #define OP_W_LH 0x30
 #define UNIT_INT 16931
 
-
+//键盘相关的常量
+#define KEY_READ_PORT 0x60
 
 #endif

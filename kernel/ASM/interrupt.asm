@@ -10,11 +10,25 @@ global NP_ERR
 global SS_ERR
 global GP_ERR
 global PF_ERR
+global keybordInt
 extern kernel_esp
 extern process_esp
 extern debug
 extern gdt_ptr
-int_times dd 0 
+extern keybordHandle
+int_times dd 0
+
+keybordInt:
+    pushad
+    call keybordHandle
+    ;通知处理器可以接受中断了
+    mov al,20h
+    mov dx,20h
+    out dx,al
+    popad
+    iretd
+
+
 Interrupt_0:
     pushad   ;addr:0x35e80
     ;下面代码为进程切换代码
@@ -149,5 +163,14 @@ exception:
     add esp,4;0x00000003577d
     iretd
 
+global close_int
+global open_int
+
+close_int:
+    cli
+    ret
+open_int:
+    sti
+    ret
 
     
