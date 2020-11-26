@@ -41,7 +41,7 @@ Process * fetch(){
     }
 }
 //初始化进程
-void  InitProcess(Process * p,void * enter,u32 DPL){
+void  RunProcess(Process * p,void * enter,u32 DPL){
     /*下面开始初始化进程信息*/
     p->EAX = 0;
     p->EBX = 0;
@@ -98,7 +98,6 @@ void  InitProcess(Process * p,void * enter,u32 DPL){
     //制作DPL2的堆栈空间
     u32  ESP2 = 0x8000Efff;
     Descriptor ss2_des = make_descriptor(0,(u32)0x800a000,UNIT_1BY|DB32|P_OK|DPL_2|S_DATA|TYPE_DATA_RW_D);
-    show_str_format(0,8,"ss2:%x %x",ss2_des.high>>16,ss2_des.low);
     u32  SS2_sel =  SetUpLdtDescriptor(p->ldt,ss2_des);
     //制作DPL3的堆栈空间
     u32 ESP3 = 0x80013FFF;
@@ -129,7 +128,6 @@ void  InitProcess(Process * p,void * enter,u32 DPL){
     p->ldt_sel = SetUpGdtDescriptor(ldt_des);
     /***************/
     AddProcess(p);
-
 }
 //初始TSS
 void initTSS(u32 ss0,u32 esp0,u32 ss1,u32 esp1,u32 ss2,u32 esp2){
@@ -153,4 +151,33 @@ void initTSS(u32 ss0,u32 esp0,u32 ss1,u32 esp1,u32 ss2,u32 esp2){
 //得到当前运行的进程
 Process * getCurrentP(){
     return process_tab.cursor;
+}
+
+void  InitKernelProcess(Process * p,void * enter){
+    /*下面开始初始化进程信息*/
+    p->EAX = 0;
+    p->EBX = 0;
+    p->ECX = 0;
+    p->EDX = 0;
+    p->EDI = 0;
+    p->ESI = 0;
+    p->CS = 0x08;
+    p->EIP = enter;
+    p->EFLAGE =0x00000206;
+    p->ds = 0x0010;
+    p->es = 0x0010;
+    p->fs = 0x0000;
+    p->gs = 0x0000;
+    p->ESP = 0x7c00;
+    p->ss = 0x10;
+    //设置进程的特权级
+    p->DPL = DPL_0;
+    //设置PID
+    p->PID = 0; 
+    //为页目录开辟空间，放在系统内存中
+    p->page_catalog=page_catalog;
+    /*******************/
+    p->ldt_sel = 0x00;
+    /***************/
+    AddProcess(p);
 }
