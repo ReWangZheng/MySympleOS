@@ -26,6 +26,7 @@ u8 get(Buffer * buffer){
     }
     buffer->read_cursor = (buffer->read_cursor+1) % buffer->max_size;
     u8 code = buffer->buf[buffer->read_cursor];
+    buffer->size--;
     return code;
 }
 
