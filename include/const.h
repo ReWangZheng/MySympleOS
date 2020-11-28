@@ -88,5 +88,5 @@
 
 //键盘相关的常量
 #define KEY_READ_PORT 0x60
-
+#define NULL 0
 #endif

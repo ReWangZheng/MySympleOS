@@ -1,7 +1,7 @@
 #ifndef CPROCESS
 #define CPROCESS
 #include "type.h"
-
+typedef void(*Task)(); //定义了一个进程入口的接口
 typedef struct Process
 {
     //popad
@@ -46,7 +46,6 @@ typedef struct PCB
     Process *cursor;
     TSS * tss;
 }PCB;
-
 void initProcesTab();
 void AddProcess(Process *p);
 Process * fetch();
@@ -54,5 +53,5 @@ void  RunProcess(Process * p,void * enter,u32 DPL);
 Process * getCurrentP();
 void initTSS(u32 ss0,u32 esp0,u32 ss1,u32 esp1,u32 ss2,u32 esp2);
 void InitKernelProcess(Process * p,void * enter);//初始化内核进程
-
+void invokeProcess(); //进程的过程入口
 #endif

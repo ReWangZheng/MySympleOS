@@ -11,6 +11,7 @@ global SS_ERR
 global GP_ERR
 global PF_ERR
 global keybordInt
+global ldprocess
 extern kernel_esp
 extern process_esp
 extern debug
@@ -46,7 +47,7 @@ Interrupt_0:
     ;得到当前进程
     call getCurrentP
     cmp eax,0
-    jz noprocess
+    jz ldprocess
     ;将esp恢复一下
     add dword [esp+12],12
     ;下面保护段寄存器
@@ -76,7 +77,7 @@ Interrupt_0:
     mov [eax+ebx],edx
     add ebx,4
     loop .save
-noprocess:
+ldprocess:
     ;问题1：为什么edx的值会发生变化？？
     push eax
     call fetch

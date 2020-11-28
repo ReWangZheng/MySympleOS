@@ -16,4 +16,5 @@ u32 getDS();
 u32 getCS();
 u32 getEFLAGE();
 void LoadTSS();
+void ldprocess();
 #endif
