@@ -17,7 +17,6 @@ extern debug
 extern gdt_ptr
 extern keybordHandle
 int_times dd 0
-
 keybordInt:
     pushad
     call keybordHandle
@@ -27,8 +26,6 @@ keybordInt:
     out dx,al
     popad
     iretd
-
-
 Interrupt_0:
     pushad   ;addr:0x35e80
     ;下面代码为进程切换代码
@@ -162,10 +159,8 @@ exception:
     popad
     add esp,4;0x00000003577d
     iretd
-
 global close_int
 global open_int
-
 close_int:
     cli
     ret
