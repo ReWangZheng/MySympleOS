@@ -11,8 +11,11 @@ void show3(){
     int number = 0;
     while (number<=5)
     {
-        show_str_format(0,4,"process p:%d",number++);
-        sleep(1000);
+        u8 * add = 0xa0000;
+        for(int j=0;j<0xffff;j++){
+            *(add+j)=15;
+            sleep(1);
+        }
     }
 }
 int __kernel__(){
