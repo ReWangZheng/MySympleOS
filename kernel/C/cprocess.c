@@ -42,6 +42,7 @@ Process *fetch()
     {
         Process *res = process_tab.head;
         process_tab.cursor = res;
+        show_str_format(0, 0, "%d process are running.....", res->PID);
         return res;
     }
     else

@@ -24,9 +24,11 @@ int_times dd 0
 hdiskInt:
     pushad
     call hd_handle
+    mov al,20h
+    mov dx,20h
+    out dx,al
     popad
     iretd
-
 keybordInt:
     pushad
     call keybordHandle
@@ -41,7 +43,7 @@ Interrupt_0:
     ;下面代码为进程切换代码
     mov eax,[int_times]
     cmp eax,0
-    jnz end
+    jnz end_all
     ;标记一下中断数量
     inc eax
     mov dword [int_times],eax
@@ -132,6 +134,7 @@ end:
     popad
     ;设置标记为0
     mov dword [int_times],0
+end_all:
     iretd
 ;除数为0  0x00
 DE_ERR:
