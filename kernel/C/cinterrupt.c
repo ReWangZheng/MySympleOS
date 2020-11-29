@@ -38,7 +38,8 @@ void init_interrupt(){
     SetInt(0x20,Interrupt_0);
     //为键盘中断绑定处理函数
     SetInt(0x21,keybordInt);
-    
+    SetInt(0x2e,hdiskInt);
+
 }
 
 void exception_handle(int code){

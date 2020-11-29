@@ -12,12 +12,21 @@ global GP_ERR
 global PF_ERR
 global keybordInt
 global ldprocess
+global hdiskInt
 extern kernel_esp
 extern process_esp
 extern debug
 extern gdt_ptr
 extern keybordHandle
+extern hd_handle
 int_times dd 0
+
+hdiskInt:
+    pushad
+    call hd_handle
+    popad
+    iretd
+
 keybordInt:
     pushad
     call keybordHandle

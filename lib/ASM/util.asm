@@ -93,6 +93,21 @@ in_byte:
     pop edx
     pop ebp
     ret
+global in_byte_16
+in_byte_16:
+    ;参数1：端口号
+    push ebp
+    mov ebp,esp
+    push edx
+    mov edx,[ebp+8]
+    xor eax,eax
+    in ax,dx
+    nop
+    nop
+    pop edx
+    pop ebp
+    ret
+
 ;---------------------
 global clear
 clear:

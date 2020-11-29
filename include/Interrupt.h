@@ -2,6 +2,7 @@
 #define INTERRUPT
 #include "cInterrupt.h"
 void Interrupt_0();//时钟周期中断
+void hdiskInt(); //硬盘服务程序
 void keybordInt(); //键盘中断
 void close_int(); // 关中断
 void open_int(); //开中断

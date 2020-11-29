@@ -10,16 +10,16 @@
 #define ICW1 0x11
 #define ICW2_MAST 0x20 //主片中断向量从0x20开始
 #define ICW2_CASCADE 0x28 //从片从0x28开始
+
 #define ICW3_MAST 0x04 //IR2 对应的是从片
 #define ICW3_CASCADE 0x02 //IR2 对应的是从片
 
 #define ICW4 0x01 //
 
-#define OCW1_MAST 0Xfc // 仅开启时钟中断
-#define OCW1_CASCADE 0xff //关闭从片所有中断
+#define OCW1_MAST 0xf8 // 仅开启时钟中断
+#define OCW1_CASCADE 0xbf //关闭从片所有中断
 
-
-#define IDT_LEN 0x140
+#define IDT_LEN 0x280
 #define IDT_ADDR 0x00003000
 
 #define RTC_0X70 0x70
