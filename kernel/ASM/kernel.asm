@@ -1,4 +1,5 @@
 extern SYSTERM_INIT
+extern initDestop
 global _start
 _start:
     mov ax,100  ;0x35012
