@@ -48,7 +48,7 @@ Interrupt_0:
     inc eax
     mov dword [int_times],eax
     ;开中断
-    sti
+    
     ;通知处理器可以接受中断了
     mov al,20h
     mov dx,20h

@@ -21,6 +21,7 @@ void initProcesTab()
 //添加一个进程
 void AddProcess(Process *p)
 {
+    p->state = Wait;
     if (process_tab.head == 0)
     {
         process_tab.head = p;
@@ -42,19 +43,21 @@ Process *fetch()
     {
         Process *res = process_tab.head;
         process_tab.cursor = res;
-        show_str_format(0, 0, "%d process are running.....", res->PID);
         return res;
     }
     else
     {
         Process *res;
         process_tab.cursor = process_tab.cursor->next;
+        while (process_tab.cursor->state!=Wait)
+        {
+            process_tab.cursor=process_tab.cursor->next;
+        }
         res = process_tab.cursor;
-        show_str_format(0, 0, "%d process are running.....", res->PID);
+        show_str_format(0,0,"the process running :%d      ",res->PID);
         return res;
     }
 }
-
 void RemoveProcess(int pid)
 {
     Process *cur = process_tab.head;
@@ -229,7 +232,5 @@ void invokeProcess()
     //执行完成之后将进程从队列中去掉
     RemoveProcess(p->PID);
     /***下面应该写一些资源回收的内容**/
-
-
     ldprocess(); //不用在保存现场，直接切换进程
 }

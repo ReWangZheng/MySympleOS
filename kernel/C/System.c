@@ -9,23 +9,14 @@
 #include "process.h"
 #include "ctime.h"
 #include "ckeyboard.h"
+#include "ckernel.h"
 GDT gdt_ptr;
 IDT idt_ptr;
 int gdt_size=0;
 Process kernel; //内核进程
-Process p; //内核进程
-Process p2; 
-void show(){
-    int number = 0;
-    while (1)
-    {
-        sleep(1000);
-        show_str_format(0,5,"the System has ran %d seconds",number++);
-    }
-}
 unsigned int ticks;
-int __kernel__();
 void SYSTERM_INIT(){
+    show_str_format(0,2,"acaascasc",15);
     ticks = 0;
     GDT old_gdt;
     GetGDT(&old_gdt);
@@ -36,4 +27,3 @@ void SYSTERM_INIT(){
     initProcesTab(); //初始化进程表
     InitKernelProcess(&kernel,__kernel__); //初始化内核进程
 }
-

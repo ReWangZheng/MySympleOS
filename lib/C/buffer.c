@@ -1,4 +1,5 @@
 #include "buffer.h"
+#include "util.h"
 Buffer* MakeBuffer(int bufsize){
     Buffer * res = (Buffer*)malloc(sizeof(Buffer));
     res->buf =(u8*)malloc(bufsize);
@@ -8,7 +9,6 @@ Buffer* MakeBuffer(int bufsize){
     res->append_cursor = 0;
     return res;
 }
-#include "util.h"
 void append(Buffer* buffer,u8 code){
     //判断缓冲区满了没有
     show_str_format(0,3,"max_size:%d r:%d  a:%d  ",buffer->max_size,buffer->read_cursor,buffer->append_cursor);

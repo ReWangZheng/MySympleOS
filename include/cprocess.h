@@ -1,7 +1,23 @@
 #ifndef CPROCESS
 #define CPROCESS
+#define Wait 0x01
+#define Sending 0x02
+#define Receving 0x03
+#define Runing 0x04
+#define Block 0x04
 #include "type.h"
 typedef void(*Task)(); //定义了一个进程入口的接口
+
+struct Process;
+typedef struct  Message{
+    u32 message;
+    struct Process *  message_from;
+    struct Process * message_to;
+    struct Message *next;
+}Message;
+
+
+typedef u32 State;
 typedef struct Process
 {
     //popad
@@ -36,7 +52,9 @@ typedef struct Process
     u32 DPL;
     //下一个进程
     struct Process * next;
+    State state;
 }Process;
+
 
 
 typedef struct PCB
@@ -46,6 +64,8 @@ typedef struct PCB
     Process *cursor;
     TSS * tss;
 }PCB;
+
+
 void initProcesTab();
 void AddProcess(Process *p);
 Process * fetch();

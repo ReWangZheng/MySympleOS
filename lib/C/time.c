@@ -7,6 +7,7 @@ unsigned int getticks(){
 void sleep(u32 t){
     u32 t0 = getticks();
     while (getticks()-t0<t){
+        continue;
     }
     
 }

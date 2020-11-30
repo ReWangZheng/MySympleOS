@@ -10,5 +10,5 @@ u32 u16_and_u16(u16 high,u16 low);
 char * itoc(char *str,int number);
 char * itoh(char *str,int number);
 void clean_screen();
-void show_str_format(int x,int y,char *str,...);
+void show_str_format(int x,int y,const char *str,...);
 #endif

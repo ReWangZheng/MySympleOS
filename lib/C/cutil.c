@@ -69,7 +69,7 @@ void clean_screen(){
     SetCursor(0,0);
 }
 // 打印字符串
-void show_str_format(int x,int y,char *str,...){
+void show_str_format(int x,int y,const char *str,...){
     u32 * paragram = &str;
     u16 *display = 0xb8000;
     int i = 0;
