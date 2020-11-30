@@ -17,9 +17,9 @@ void  CInterrupt_0(){
 // 键盘中断处理汉函数
 void keybordHandle(){
     //得到键盘扫描码
-    // KeyCode code = in_byte(0x60);
-    // append_code(code);
-    // show_str_format(0,7,"%x",code);
+    KeyCode code = in_byte(0x60);
+    append_code(code);
+    show_str_format(0,7,"%x",code);
 }
 void init_interrupt(){
     //设置idt
@@ -39,7 +39,6 @@ void init_interrupt(){
     //为键盘中断绑定处理函数
     SetInt(0x21,keybordInt);
     SetInt(0x2e,hdiskInt);
-
 }
 
 void exception_handle(int code){
