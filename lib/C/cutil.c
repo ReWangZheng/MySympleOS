@@ -7,7 +7,7 @@ Cursor GetCursor(){
     cursor.x = cursors % 80;
     cursor.y = cursors / 80;
     return cursor;
-}
+};
 //连接两个字
 u16 u8_and_u8(u8 high,u8 low){
     u16 res = ((u16)high<<8)|((u16)low);
@@ -142,8 +142,9 @@ int bit_test(u8 input,int flag){
     }
     return -1;
 }
+//字符串方法
 
-void strcmp(char * dst,char * src){
+void strcp(char * dst,char * src){
     while (1)
     {
         *dst = *src;
@@ -154,3 +155,20 @@ void strcmp(char * dst,char * src){
         }
     }
 }
+
+int strcmp(char * dst,char * src){
+    while (1)
+    {
+        char c_dst = (*dst);
+        char c_src = (*src);
+        if(c_dst==0 && c_src==0){
+            return 0;
+        }
+        if(c_dst-c_src!=0){
+            return c_dst-c_src;
+        }
+        dst++;
+        src++;
+    }
+}
+

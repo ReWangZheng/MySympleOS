@@ -1,9 +1,4 @@
-#include "type.h"
-#include "ckeyboard.h"
-#include "cmemory.h"
-#include "buffer.h"
-#include "util.h"
-#include "ctime.h"
+#include "summary.h"
 #include "keymap.h"
 #define KEYBUFF_MAXLEN 200
 Buffer *key_buffer;

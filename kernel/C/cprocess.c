@@ -1,10 +1,4 @@
-#include "process.h"
-#include "protect.h"
-#include "util.h"
-#include "const.h"
-#include "cmemory.h"
-#include "page.h"
-#include "Interrupt.h"
+#include "summary.h"
 #define PAGDRR(x) ((u32)(x)) & 0xfffff000
 PCB process_tab;
 

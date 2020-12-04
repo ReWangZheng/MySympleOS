@@ -1,23 +1,10 @@
-#include "const.h"
-#include "type.h"
-#include "util.h"
-#include "cprotect.h"
-#include "cmemory.h"
-#include "Interrupt.h"
-#include "page.h"
-#include "protect.h"
-#include "process.h"
-#include "ctime.h"
-#include "ckeyboard.h"
-#include "ckernel.h"
+#include "summary.h"
 GDT gdt_ptr;
 IDT idt_ptr;
 int gdt_size=0;
 Process kernel; //内核进程
 unsigned int ticks;
 void SYSTERM_INIT(){
-    char s[]="acaascasc %d";
-    show_str_format(0,2,"acaascasc %d",15);
     ticks = 0;
     GDT old_gdt;
     GetGDT(&old_gdt);

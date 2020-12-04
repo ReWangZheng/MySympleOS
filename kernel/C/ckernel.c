@@ -1,13 +1,4 @@
-#include "process.h"
-#include "util.h"
-#include "ctime.h"
-#include "ckeyboard.h"
-#include "const.h"
-#include "page.h"
-#include "protect.h"
-#include "harddisk.h"
-#include "ckernel.h"
-#include "filesys.h"
+#include "summary.h"
 Process keybod_process;
 Process hd_process;
 extern PartInfor parts[10];
@@ -24,6 +15,8 @@ void __kernel__(){
     }
     WriteHDLinear(0x3000,&s,200);
     MakeFileSystem(parts[2]); //制作文件系统
+    char path[] ="C:/";
+    do_open(path,1);
     while (1){
         show_str_format(0,13,str,number++);
         sleep(1000);

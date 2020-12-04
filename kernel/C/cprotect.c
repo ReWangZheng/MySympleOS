@@ -1,8 +1,4 @@
-#include "util.h"
-#include "const.h"
-#include "type.h"
-#include "memory.h"
-#include "protect.h"
+#include "summary.h"
 extern IDT idt_ptr;
 extern GDT gdt_ptr;
 void Init_8259(){

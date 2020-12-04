@@ -1,5 +1,7 @@
 #ifndef FILESYSTEM
 #define FILESYSTEM
+#include "harddisk.h"
+
 #define Extended 0x05
 #define SYMPLE_OS_IDENT 0x99
 #define MAX_INODE_COUNT 4096
@@ -32,7 +34,7 @@ struct superblock{
 };
 
 // 2 + 2 + 16 + 16 + 4 = 40个字节 
-struct inode{
+typedef struct inode{
     u16 id; //inode唯一标识符 2个字节
     u16 attr; // 属性 2个字节
     char name[16]; //文件名字 --->16个字节
@@ -46,6 +48,13 @@ struct dir_item{
     u16 id; //inode-id  2个字节
 }dir_item;
 
+struct file_desc{
+    int fd_mode;
+    int fd_pos;
+    struct inode * fd_inode;
+}file_desc;
+
 void MakeFileSystem(PartInfor info);
+int do_open(char * filename,int mode);
 
 #endif

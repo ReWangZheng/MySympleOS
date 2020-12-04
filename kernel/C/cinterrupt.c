@@ -1,9 +1,4 @@
-#include "Interrupt.h"
-#include "util.h"
-#include "const.h"
-#include "protect.h"
-#include "process.h"
-#include "ckeyboard.h"
+#include "summary.h"
 unsigned char times=0;
 unsigned int cur = 0;
 extern IDT idt_ptr;

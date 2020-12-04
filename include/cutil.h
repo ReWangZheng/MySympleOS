@@ -12,5 +12,6 @@ char * itoh(char *str,int number);
 int bit_test(u8 input,int flag);
 void clean_screen();
 void show_str_format(int x,int y,const char *str,...);
-void strcmp(char * dst,char * src);
+int strcmp(char * dst,char * src);
+void strcp(char * dst,char * src);
 #endif

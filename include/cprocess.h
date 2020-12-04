@@ -6,6 +6,7 @@
 #define Runing 0x04
 #define Block 0x04
 #include "type.h"
+#include "filesys.h"
 typedef void(*Task)(); //定义了一个进程入口的接口
 
 struct Process;
@@ -53,6 +54,8 @@ typedef struct Process
     //下一个进程
     struct Process * next;
     State state;
+    //文件描述符
+    struct file_desc filep[10];
 }Process;
 
 

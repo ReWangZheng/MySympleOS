@@ -1,7 +1,4 @@
-#include "page.h"
-#include "const.h"
-#include "memory.h"
-#include "util.h"
+#include "summary.h"
 #define PAGDRR(x) ((u32)(x))&0xfffff000
 extern u32 * page_catalog;//
 extern u32 * page_table_4MB;
