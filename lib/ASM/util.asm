@@ -79,6 +79,26 @@ out_byte:
     pop ebp
     ret
 ;--------------------------------------------
+global out_byte_16
+;void out_byte(u16 port,u8 value);
+out_byte_16:
+    ;参数1：端口号
+    ;参数2：值
+    push ebp
+    mov ebp,esp
+    push edx
+    mov edx,[ebp+8]
+    mov eax,[ebp+12]
+    out dx,ax
+    nop
+    nop
+    nop
+    nop
+    pop edx
+    pop ebp
+    ret
+;--------------------------------------------
+
 global in_byte
 in_byte:
     ;参数1：端口号

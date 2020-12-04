@@ -9,6 +9,8 @@ u16 u8_and_u8(u8 high,u8 low);
 u32 u16_and_u16(u16 high,u16 low);
 char * itoc(char *str,int number);
 char * itoh(char *str,int number);
+int bit_test(u8 input,int flag);
 void clean_screen();
 void show_str_format(int x,int y,const char *str,...);
+void strcmp(char * dst,char * src);
 #endif

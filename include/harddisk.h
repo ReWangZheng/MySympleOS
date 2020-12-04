@@ -16,7 +16,9 @@
 #define PRIMARY_CONTOL_PORT 0x3f6
 
 #define DEVICE_PRIMARY_LBA_MODE 0xe0
+
 #define COMMAND_REQUEST_READ 0x20
+#define COMMAND_REQUEST_WRITE 0x30
 #include "type.h"
 typedef struct HardDiskMes
 {
@@ -49,5 +51,8 @@ void hd_handle();
 void ReadHardDiskMes(int HD); //根据设备号读取分区信息
 void ReadHDLBA(u32 sec_start,Sector * buf,int size); //LBA读取扇区
 void ReadHDLinear(u32 start,u8 * buf,int len);//根据线性地址读取硬盘
+void WriteHDLBA(u32 sec_start,Sector * buf,int size);
+void WriteHDLinear(u32 start,u8 * buf,int len);
+
 #endif
 

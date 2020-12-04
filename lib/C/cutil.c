@@ -126,3 +126,31 @@ void show_str_format(int x,int y,const char *str,...){
         }
     }     
 }
+
+//测试比特位
+int bit_test(u8 input,int flag){
+    if(input==0xff){
+        return -1;
+    }
+    for(int i =0;i<8;i++){
+        int test = ((input >> i) & 1);
+        if(flag==0 && flag == test){
+            return i;
+        }else if(flag==1 && flag==test){
+            return i;
+        }
+    }
+    return -1;
+}
+
+void strcmp(char * dst,char * src){
+    while (1)
+    {
+        *dst = *src;
+        src++;
+        dst++;
+        if(*src==0){
+            break;
+        }
+    }
+}

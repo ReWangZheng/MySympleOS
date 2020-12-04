@@ -16,7 +16,8 @@ int gdt_size=0;
 Process kernel; //内核进程
 unsigned int ticks;
 void SYSTERM_INIT(){
-    show_str_format(0,2,"acaascasc",15);
+    char s[]="acaascasc %d";
+    show_str_format(0,2,"acaascasc %d",15);
     ticks = 0;
     GDT old_gdt;
     GetGDT(&old_gdt);
