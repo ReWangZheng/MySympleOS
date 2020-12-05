@@ -142,20 +142,27 @@ int bit_test(u8 input,int flag){
     }
     return -1;
 }
-//字符串方法
 
+int bit(u8 *buf,int x){
+    int byte_index = x/8;
+    int bit_offset = x %8;
+    u8 byte = *(buf+byte_index);
+    return (byte>>bit_offset) & 1;
+}
+
+
+//字符串方法
 void strcp(char * dst,char * src){
     while (1)
     {
         *dst = *src;
-        src++;
-        dst++;
-        if(*src==0){
+        if((*src)==0){
             break;
         }
+        src++;
+        dst++;
     }
 }
-
 int strcmp(char * dst,char * src){
     while (1)
     {
@@ -172,3 +179,27 @@ int strcmp(char * dst,char * src){
     }
 }
 
+int split(char * src,char splitch,char buf[][16],int max){
+    int buf_cursor =0;
+    int buf_offset =0;
+    int index = 0;
+    int res=1;
+    while (1)
+    {
+        char ch = src[index++];
+        if(ch==0){
+            break;
+        }
+        if(ch == splitch){
+            buf_cursor++;
+            buf_offset=0;
+            res++;
+        }else{
+            if(buf_cursor>=max){
+                break;
+            }
+            buf[buf_cursor][buf_offset++]=ch;
+        }
+    }
+    return res;
+}

@@ -9,5 +9,4 @@ void sleep(u32 t){
     while (getticks()-t0<t){
         continue;
     }
-    
 }

@@ -14,4 +14,6 @@ void clean_screen();
 void show_str_format(int x,int y,const char *str,...);
 int strcmp(char * dst,char * src);
 void strcp(char * dst,char * src);
+int split(char * src,char splitch,char buf[][16],int max);
+int bit(u8 *buf,int x);
 #endif

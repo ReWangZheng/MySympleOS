@@ -19,7 +19,6 @@ void append(Buffer* buffer,u8 code){
     buffer->append_cursor = (buffer->append_cursor + 1) % buffer->max_size;
     buffer->size++;
 }
-
 u8 get(Buffer * buffer){
     if(buffer->size==0){
         return 0;
