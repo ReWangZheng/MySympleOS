@@ -124,23 +124,19 @@ void do_mkdir(char * path){
 }
 
 //方法：打开文件
-
 #define INODE_TEMP_SIZE 1
 inode nodes_temp[INODE_TEMP_SIZE];
 
 int do_open(char * filename,int mode){
-    char part[2]={'s',0};
+    char part[2];
     part[0] = filename[0];
     PartInfor *part_mes = getinfo(part);
-    
     //申请一个super block
     struct superblock s;
-    
     //得到了super block
     getsuperblock(&s,part_mes);
     char ch[10]="showin %x";
     show_str_format(0,5,ch,part[0]);
-
     //根目录的id    
     u32 rooid = s.root_inode_id;
     //16个inode缓冲
