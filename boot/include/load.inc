@@ -1,17 +1,14 @@
-	;boot 位置
-    boot_base equ 0x7c00
-    
-    ;加载器位置
-    loader_base equ 0x0800 ;段地址
-	loader_offset equ 0x000 ;偏移地址
-    loader_address equ 0x8000
-    ;FAT缓冲位置
-	FAT_base equ 0x1000
-	FAT_offset equ 0
+BaseOfLoader		equ	 09000h	; LOADER.BIN 被加载到的位置 ----  段地址
+OffsetOfLoader		equ	  0100h	; LOADER.BIN 被加载到的位置 ---- 偏移地址
 
-    ;kernel加载位置
-    kernel_base equ 0x3000
-	kernel_offset equ 0x0000
-    kernel_address equ 0x30000
-    ;GDT加载位置:0x10045  段界限 
-    ;IDT加载位置：0x3000 段界限8*10=80
+BaseOfLoaderPhyAddr	equ	BaseOfLoader * 10h	; LOADER.BIN 被加载到的位置 ---- 物理地址 (= BaseOfLoader * 10h)
+
+
+BaseOfKernelFile	equ	 08000h	; KERNEL.BIN 被加载到的位置 ----  段地址
+OffsetOfKernelFile	equ	     0h	; KERNEL.BIN 被加载到的位置 ---- 偏移地址
+
+BaseOfKernelFilePhyAddr	equ	BaseOfKernelFile * 10h
+KernelEntryPointPhyAddr	equ	030400h	; 注意：1、必须与 MAKEFILE 中参数 -Ttext 的值相等!!
+
+
+

@@ -67,7 +67,6 @@ void WriteHDLBA(u32 sec_start,Sector * buf,int size){
     while ((state&0x80)==0x80){
         state = in_byte(PRIMARY_STATUS_PORT);
     }
-
     //开始写数据
     for(int i = 0;i < size;i++){
         for(int j =0;j<512;j+=2){
@@ -94,7 +93,6 @@ void ReadHDLinear(u32 start,u8 * buf,int len){
         *(buf+i) = sec[sec_index].data[sec_offset];
     }
 }
-
 // 根据数据在磁盘中的线性地址来写
 void WriteHDLinear(u32 start,u8 * buf,int len){
     // 线性地址在扇区的起始点
@@ -117,7 +115,6 @@ void WriteHDLinear(u32 start,u8 * buf,int len){
     // 然后我们在覆盖原来的数据
     WriteHDLBA(sector_start,sec,sector_count);
 }
-
 // 获取硬盘分区表信息
 PartInfor parts[10];
 void ReadHardDiskMes(int HD){
@@ -151,8 +148,7 @@ void ReadHardDiskMes(int HD){
         if(parts[i].Type == Extended){
             logist_part = i;
         }
-        char s[]="Name:%s State %x,Type %x,Start %x,Count %x";
-        show_str_format(0,14+i,s,parts[i].Name,parts[i].State,parts[i].Type,parts[i].LBA_START,parts[i].SEC_COUNT);
+        show_str_format(0,14+i,"Name:%s State %x,Type %x,Start %x,Count %x",parts[i].Name,parts[i].State,parts[i].Type,parts[i].LBA_START,parts[i].SEC_COUNT);
         addr +=16;
     }
     //如果包含有逻辑分区
@@ -178,8 +174,7 @@ void ReadHardDiskMes(int HD){
             parts[i].Name[0] = name[i];
             parts[i].Name[1] = 0;
             parts[i].ID = i;
-            char s[]="extend Name:%s State %x,Type %x,Start %x,Count %x";
-            show_str_format(0,14+i,s,parts[i].Name,parts[i].State,parts[i].Type,parts[i].LBA_START,parts[i].SEC_COUNT);
+            show_str_format(0,14+i,"extend Name:%s State %x,Type %x,Start %x,Count %x",parts[i].Name,parts[i].State,parts[i].Type,parts[i].LBA_START,parts[i].SEC_COUNT);
             //判断是否还有逻辑分区
             if( *(buf+16+4) != Extended){
                 break;

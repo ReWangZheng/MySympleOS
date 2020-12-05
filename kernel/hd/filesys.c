@@ -53,8 +53,6 @@ void SimpleFS(PartInfor info){
     root.id = 0;
     char rootname[] = "root";
     strcp(root.name,rootname);
-    char c[]="use %s";
-    show_str_format(3,7,c,root.name);
     
     root.attr = ATTR_DIR;
     for(int i =0;i<8;i++){
@@ -135,8 +133,6 @@ int do_open(char * filename,int mode){
     struct superblock s;
     //得到了super block
     getsuperblock(&s,part_mes);
-    char ch[10]="showin %x";
-    show_str_format(0,5,ch,part[0]);
     //根目录的id    
     u32 rooid = s.root_inode_id;
     //16个inode缓冲

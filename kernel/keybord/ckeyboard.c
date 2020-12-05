@@ -28,8 +28,7 @@ void handle(KeyCode code){
         //也不做操作
     }else{
         //如果是make码
-        char key[]="key:";
-        show_str_format(0,5,key);
+        show_str_format(0,5,"key:");
         if((0x80 & code)==0){
             u32 key = keymap[(code&0x7f)*3];
             if(key==SHIFT_L){
