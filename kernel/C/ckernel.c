@@ -1,9 +1,10 @@
 #include "summary.h"
+#include "cerror.h"
 Process keybod_process;
 Process hd_process;
 extern PartInfor parts[10];
-
 void __kernel__(){
+    assert(0);
     int number = 0;
     RunProcess(&keybod_process,KeyProcess_enter,0); //运行键盘处理进程
     RunProcess(&hd_process,hd_server,0); //测试进程能否返回成功！

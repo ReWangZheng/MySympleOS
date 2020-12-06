@@ -10,8 +10,9 @@ cmemory.o memory.o util.o cutil.o\
 cprotect.o protect.o\
 cinterrupt.o interrupt.o\
 harddisk.o buffer.o \
-System.o  ckeyboard.o  ckernel.o cprocess.o filesys.o time.o 
-VPATH:=bin kernel/C kernel/ASM kernel/keybord kernel/GUI include lib/C lib/ASM kernel/hd boot
+System.o  ckeyboard.o  ckernel.o cprocess.o filesys.o time.o \
+error.o
+VPATH:=bin kernel/C kernel/ASM kernel/keybord kernel/GUI kernel/err include lib/C lib/ASM kernel/hd boot
 %.o:%.asm
 	nasm -f elf $^ -I $(asminclude) -o $(binhome)$@
 

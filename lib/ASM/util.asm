@@ -127,7 +127,6 @@ in_byte_16:
     pop edx
     pop ebp
     ret
-
 ;---------------------
 global clear
 clear:
@@ -148,4 +147,8 @@ clear:
     pop edi
     pop eax
     pop ebx
+    ret
+global ud2_indicate
+ud2_indicate:
+    ud2
     ret

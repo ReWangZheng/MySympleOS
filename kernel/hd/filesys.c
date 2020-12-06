@@ -172,7 +172,7 @@ static inode *getInodeByid(struct superblock * s,int id){
     return res;
 }
 //得到分区的inode位图
-static void  getInodemap(struct superblock *s,Sector * buf){
+void  getInodemap(struct superblock *s,Sector * buf){
     int start = s->inode_map_start;
     int sec_count = s->inode_map_sec_count;
     ReadHDLBA(start,buf,sec_count);

@@ -11,4 +11,5 @@ u16 in_byte_16(u16 port);
 void out_byte_16(u16 port,u16 value);
 void clear();
 void get_cr2(u32 *addr);
+void ud2_indicate();
 #endif
