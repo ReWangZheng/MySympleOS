@@ -1,5 +1,6 @@
 #include "summary.h"
 #include "keymap.h"
+#include "ctty.h"
 #define KEYBUFF_MAXLEN 200
 Buffer *key_buffer;
 int t;
@@ -44,8 +45,13 @@ void handle(KeyCode code){
                         key_ch = key_ch+32;
                     }
                 }
-                str[0] = key_ch;
-                show_str_format(t++,5,"%s",str);
+                if(key_ch>=0x14 && key_ch<=0x16){
+                    switch_tty(key_ch-0x14);
+                }else{
+                    struct tty* s_tty = getCurrentTTY();
+                    append(s_tty->Buffer,key_ch);
+                }
+                
             }
         }else if((0x80 & code)==0x80){
             //如果是break码

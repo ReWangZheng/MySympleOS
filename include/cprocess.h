@@ -1,10 +1,11 @@
 #ifndef CPROCESS
 #define CPROCESS
-#define Wait 0x01
+#define Ready 0x01
 #define Sending 0x02
 #define Receving 0x03
 #define Runing 0x04
 #define Block 0x04
+#define Dead 0x05
 #include "type.h"
 #include "filesys.h"
 typedef void(*Task)(); //定义了一个进程入口的接口
@@ -16,8 +17,6 @@ typedef struct  Message{
     struct Process * message_to;
     struct Message *next;
 }Message;
-
-
 typedef u32 State;
 typedef struct Process
 {
@@ -56,6 +55,7 @@ typedef struct Process
     State state;
     //文件描述符
     struct file_desc filep[10];
+
 }Process;
 
 

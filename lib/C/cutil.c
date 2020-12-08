@@ -65,7 +65,10 @@ char * itoh(char *str,int number){
 }
 //清屏，并且设置光标在0,0
 void clean_screen(){
-    clear();
+    u16 *addr = 0xb8000;
+    for(int i =0;i<25*80;i++){
+        *(addr+i)=0;
+    }
     SetCursor(0,0);
 }
 // 打印字符串

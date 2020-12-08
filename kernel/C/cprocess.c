@@ -15,7 +15,7 @@ void initProcesTab()
 //添加一个进程
 void AddProcess(Process *p)
 {
-    p->state = Wait;
+    p->state = Ready;
     if (process_tab.head == 0)
     {
         process_tab.head = p;
@@ -43,7 +43,7 @@ Process *fetch()
     {
         Process *res;
         process_tab.cursor = process_tab.cursor->next;
-        while (process_tab.cursor->state!=Wait)
+        while (process_tab.cursor->state!=Ready)
         {
             process_tab.cursor=process_tab.cursor->next;
         }

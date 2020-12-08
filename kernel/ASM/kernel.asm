@@ -8,3 +8,4 @@ _start:
     call SYSTERM_INIT
     sti
     jmp $
+
