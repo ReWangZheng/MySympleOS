@@ -4,6 +4,9 @@ struct console consoles[MAX_TTY];
 struct tty ttys[MAX_TTY];
 int current_TTY;
 #define Delete_key 0x4
+#define Cursor_left 0x17
+#define Cursor_right 0x18
+
 void initTTY(){
     current_TTY = 0;
     int start_addr = 0xb8000;
@@ -33,15 +36,11 @@ void TTY_Process(){
             if(c==Delete_key){
                 //*addr=u8_and_u8(0x07,0);
                 left_shift();
-                cs->cursor--;
-                cs->append_addr-=2;
-            }else if(c==0x17){
-                // 如果C是LEFT
+            }else if(c==Cursor_left){
                 if(cs->cursor>0){
                     cs->cursor--;
                 }
-            }else if(c==0x18){
-                // 如果C
+            }else if(c==Cursor_right){
                 if(cs->cursor*2<cs->append_addr){
                     cs->cursor++;
                 }
@@ -57,7 +56,6 @@ void TTY_Process(){
         }
     }
 }
-
 struct tty * getCurrentTTY(){
     return &ttys[current_TTY];
 }
@@ -74,7 +72,6 @@ void switch_tty(int tty_id){
     out_byte(0x3d5,(u8)(start>>8));
     updatecursor();
 }
-
 void updatecursor(){
     struct console *cs= getCurrentTTY()->cs;
     unsigned int cursor = cs->cursor + 0x1400 * current_TTY;
@@ -83,8 +80,6 @@ void updatecursor(){
     out_byte(0x3d4,0xe);
     out_byte(0x3d5,cursor>>8);
 }
-
-
 void right_shift(){
     struct console *cs= getCurrentTTY()->cs;
     int dis_end = cs->dis_start + cs->append_addr;
@@ -104,4 +99,6 @@ void left_shift(){
     for(;current<end;current++,back++){
         *current = *back;
     }
+    cs->cursor--;
+    cs->append_addr-=2;
 }

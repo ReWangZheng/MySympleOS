@@ -19,6 +19,12 @@ u32 * malloc_4096_align(){
     (*r) = 0;
     return r;
 }
+void memset(u8 *dst,u8 v,int len){
+    for(int i =0;i<len;i++){
+        *dst = v;
+        dst++;
+    }
+}
 
 void read(char * filename,u8 dst[],int len){
 

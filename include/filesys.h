@@ -17,7 +17,7 @@
 */
 
 #define ATTR_DIR 0x0001
-
+#define ATTR_TXT 0x0002
 
 #include "type.h"
 struct superblock{
@@ -38,7 +38,7 @@ typedef struct inode{
     u16 id; //inode唯一标识符 2个字节
     u16 attr; // 属性 2个字节
     char name[16]; //文件名字 --->16个字节
-    u16 data_list[8]; // 数据所在扇区 16字节
+    u32 data_list[8]; // 数据所在扇区 16字节
     u32 file_size; //4个字节 文件大小
 }inode;
 
@@ -56,5 +56,5 @@ struct file_desc{
 
 void MakeFileSystem(PartInfor info);
 int do_open(char * filename,int mode);
-
+void do_mkfile(char * dir,char * file_name,u16 attr);
 #endif

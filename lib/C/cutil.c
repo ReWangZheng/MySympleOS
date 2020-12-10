@@ -150,12 +150,13 @@ int bit(u8 *buf,int x){
     int byte_index = x/8;
     int bit_offset = x %8;
     u8 byte = *(buf+byte_index);
+
     return (byte>>bit_offset) & 1;
 }
 
 
 //字符串方法
-void strcp(char * dst,char * src){
+void strcpy(char * dst,char * src){
     while (1)
     {
         *dst = *src;
@@ -182,6 +183,15 @@ int strcmp(char * dst,char * src){
     }
 }
 
+int strlen(char * str){
+    int len = 0;
+    while (str!=0)
+    {
+        len++;
+        str++;
+    }
+    return len;
+}
 int split(char * src,char splitch,char buf[][16],int max){
     int buf_cursor =0;
     int buf_offset =0;
