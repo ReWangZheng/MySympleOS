@@ -33,7 +33,7 @@ struct superblock{
     u32 first_data_sec; // 第一个数据区的扇区数
 };
 
-// 2 + 2 + 16 + 16 + 4 = 40个字节 
+// 2 + 2 + 16 + 32 + 4 = 40个字节 
 typedef struct inode{
     u16 id; //inode唯一标识符 2个字节
     u16 attr; // 属性 2个字节

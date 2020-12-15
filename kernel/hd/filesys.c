@@ -9,7 +9,6 @@ void MakeFileSystem(PartInfor info){
     }
 }
 
-
 // 通过inode 得到 文件列表
 #define INODE_TEMP_SIZE 16
 inode nodes_temp[INODE_TEMP_SIZE];
@@ -117,12 +116,65 @@ static inode * search_file_inode(struct superblock *s,PartInfor *info,char path[
 }
 
 
+
 //更新inode
 static void update_inode(struct superblock *s,inode * n){
     u32 addr = s->inode_array_start * 512 + n->id * sizeof(inode);
 
     WriteHDLinear(addr,n,sizeof(inode));
 }
+
+
+//为给定inode分配指定数量的扇区
+static int* allocate_sector(struct superblock *s,inode * node,int size){
+    u32 * sec_index = (int*)malloc(size * sizeof(int));
+    int index = node->file_size %512==0?node->file_size/512:1+node->file_size/512;
+    //判断扇区列表是否会越界
+    if(index<7&&index+1+size>7){
+        size++;
+    }
+    //得到磁盘位图
+    Sector temp[s->sec_map_count];
+    ReadHDLBA(s->sec_map_start,temp,s->sec_map_count);
+    //搜索空位置
+    int cursor = 0; //寻找的个数
+    for(int i =0;i<s->sec_map_count;i++){
+        for(int j =0;j<512;j++){
+            u8 byte = temp[i].data[j];
+            int k = bit_test(byte,0);
+            if(k==-1){
+                continue;
+            }else{
+                sec_index[cursor++] = s->first_data_sec + 512 * i + j * 8 + k;
+                temp[i].data[j] |= (1<<k);
+            }
+            if(cursor==size){
+                goto end_for;
+            }
+        }
+    }
+end_for:
+    //将该空位置占用
+    WriteHDLBA(s->sec_map_start,temp,s->sec_map_count);
+    
+    
+    // 然后将磁盘占用信息更新到inode里
+    int i=0;
+    cursor=0;
+    for(cursor=0,i = index;i<7&&cursor<size;i++,cursor++){
+        node->data_list[i] = sec_index[cursor];
+    }
+    if(i>=7&&cursor<size){
+        u32 start = node->data_list[7]*512 + (i-7) * sizeof(u32);
+        WriteHDLinear(start,&sec_index[cursor],(size-cursor)*sizeof(u32));
+    }
+    // 如果data_list已经有被分配了7个扇区，那么我们就要在扩展map列表中进行填充
+    //更新inode
+    update_inode(s,node);
+    //返回我们得到的扇区号
+    return sec_index;
+}
+
 
 //得到超级块
 static void getsuperblock(struct superblock *s,PartInfor *p){
@@ -280,13 +332,10 @@ PartInfor* getinfo(char * name){
 struct superblock* Getsuperblock(char *p){
     struct superblock *s = (struct superblock*)malloc(sizeof(struct superblock));
     PartInfor * info = getinfo(p);
-    do_open("C:",1);
-
     getsuperblock(s,info);
 
     return s;
 }
-
 // 通过路径名获取inode
 inode * getinode(char * filename){
     // 路径名字分割数组； 最长10个 每个最大为16
@@ -327,10 +376,13 @@ inode * getinode(char * filename){
 // 方法：创建文件夹
 void do_mkdir(char * parent,char * name){
     inode *  parent_dir = getinode(parent);
+    // 判断给定的dir到底是不是一个文件夹
     if(parent_dir->attr % ATTR_DIR == 0){
         panic("no dir!");
     }
-    
+    // 如果是文件夹,则先创建一个文件出来
+    do_mkfile(parent,name,ATTR_DIR);
+
 }
 
 
@@ -368,34 +420,45 @@ void do_mkfile(char * dir,char * file_name,u16 attr){
 }
 
 void do_write(inode * inode,u8 *buf,int len){
+    // 得到相要写的文件所属磁盘的超级块
+    struct superblock * s = Getsuperblock(inode->name);
     // 得到文件大小
     int fs = inode->file_size;
     // 得到字节在扇区中的偏移
     int byte_offset = fs % 512;
     // 得到我们应该写的起始扇区
-    int list_offset = fs / 512 + 1;
+    int list_offset = fs / 512;
+    // 我们即将要写的扇区序列
+    int * sec_write;
+    //先把最近的一个扇区填充满
+    int first_write_c = 512 - byte_offset;
     // 如果刚刚是一个扇区的化
     if(inode->data_list[list_offset]==0){
-        //分配一个扇区
+        //分配扇区
+        int size = len % 512==0?len/512:(len/512)+1;
+        sec_write=allocate_sector(s,inode,size);
     }else{
-        //得到想要写的扇区
         int start = inode->data_list[list_offset];
         //往扇区里写数据 :注意，这里写的数据 byte_offset+len 应该小于等于512
-        WriteHDLinear(start*512+byte_offset,buf,len);
-
-    }   
-    
+        WriteHDLinear(start*512+byte_offset,buf,first_write_c);
+        // 然后将buf进行以下偏移
+        buf +=first_write_c;
+    } 
+    //更新一下len
+    len -= first_write_c;
+    // 然后我们直接遍历给出的扇区序列进行写数据
 }
 
-//为给定inode分配指定数量的扇区
-void allocate_sector(struct superblock *s,inode * inode,int size){
-
-}
 
 
 //方法：打开文件
 int do_open(char * filename,int mode){
     inode *i = getinode(filename);
+    char *buf="haodeba,fenshoujiufenshou!";
+    struct superblock * s = Getsuperblock(filename);
+    show_str_format(5,5,"okokookoko?");
+
+    allocate_sector(s,i,1);
     if(i!=NULL){
         show_str_format(0,6,"items:%s",i->name);
     }else
