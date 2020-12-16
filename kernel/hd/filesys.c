@@ -126,27 +126,35 @@ static void update_inode(struct superblock *s,inode * n){
 
 
 //为给定inode分配指定数量的扇区
-static int* allocate_sector(struct superblock *s,inode * node,int size){
-    u32 * sec_index = (int*)malloc(size * sizeof(int));
+static int* allocate_sector(struct superblock *s,inode * node,int *in_size){
+
+    int size = *in_size;
     int index = node->file_size %512==0?node->file_size/512:1+node->file_size/512;
     //判断扇区列表是否会越界
     if(index<7&&index+1+size>7){
         size++;
+        *in_size=size;
     }
+    u32 * sec_index = (u32*)malloc(size * sizeof(u32));
+
     //得到磁盘位图
     Sector temp[s->sec_map_count];
     ReadHDLBA(s->sec_map_start,temp,s->sec_map_count);
     //搜索空位置
+
     int cursor = 0; //寻找的个数
     for(int i =0;i<s->sec_map_count;i++){
         for(int j =0;j<512;j++){
             u8 byte = temp[i].data[j];
             int k = bit_test(byte,0);
+         
+
             if(k==-1){
                 continue;
             }else{
-                sec_index[cursor++] = s->first_data_sec + 512 * i + j * 8 + k;
+                sec_index[cursor++] = s->first_data_sec + 512*8*i + j*8 + k;
                 temp[i].data[j] |= (1<<k);
+                j--;
             }
             if(cursor==size){
                 goto end_for;
@@ -154,21 +162,25 @@ static int* allocate_sector(struct superblock *s,inode * node,int size){
         }
     }
 end_for:
+
     //将该空位置占用
     WriteHDLBA(s->sec_map_start,temp,s->sec_map_count);
-    
     
     // 然后将磁盘占用信息更新到inode里
     int i=0;
     cursor=0;
-    for(cursor=0,i = index;i<7&&cursor<size;i++,cursor++){
+    for(cursor=0,i = index;i<=7&&cursor<size;i++,cursor++){
         node->data_list[i] = sec_index[cursor];
     }
+    // 如果data_list已经有被分配了7个扇区，那么我们就要在扩展map列表中进行填充
+
     if(i>=7&&cursor<size){
-        u32 start = node->data_list[7]*512 + (i-7) * sizeof(u32);
+
+        u32 start = node->data_list[7]*512 + (i-8) * sizeof(u32);
+
         WriteHDLinear(start,&sec_index[cursor],(size-cursor)*sizeof(u32));
     }
-    // 如果data_list已经有被分配了7个扇区，那么我们就要在扩展map列表中进行填充
+
     //更新inode
     update_inode(s,node);
     //返回我们得到的扇区号
@@ -416,37 +428,73 @@ void do_mkfile(char * dir,char * file_name,u16 attr){
     dir_inode->file_size+=sizeof(struct dir_item);
     update_inode(s,dir_inode);
     update_inode(s,node);
-
 }
 
-void do_write(inode * inode,u8 *buf,int len){
+void do_write(struct superblock*s,inode * node,u8 *buf,int len){
     // 得到相要写的文件所属磁盘的超级块
-    struct superblock * s = Getsuperblock(inode->name);
+    node->file_size+=len; //更新文件大小
     // 得到文件大小
-    int fs = inode->file_size;
+    int fs = node->file_size;
     // 得到字节在扇区中的偏移
     int byte_offset = fs % 512;
     // 得到我们应该写的起始扇区
     int list_offset = fs / 512;
-    // 我们即将要写的扇区序列
-    int * sec_write;
-    //先把最近的一个扇区填充满
-    int first_write_c = 512 - byte_offset;
-    // 如果刚刚是一个扇区的化
-    if(inode->data_list[list_offset]==0){
-        //分配扇区
-        int size = len % 512==0?len/512:(len/512)+1;
-        sec_write=allocate_sector(s,inode,size);
-    }else{
-        int start = inode->data_list[list_offset];
-        //往扇区里写数据 :注意，这里写的数据 byte_offset+len 应该小于等于512
-        WriteHDLinear(start*512+byte_offset,buf,first_write_c);
-        // 然后将buf进行以下偏移
-        buf +=first_write_c;
-    } 
-    //更新一下len
-    len -= first_write_c;
+    // 如果字节偏移大于0，那么我们先把当前扇区填充完
+    Sector sec_temp;
+    u32 *extend_list;
+
+    if(byte_offset>0){
+        //填充的数量
+        int first_write_c = 512 - byte_offset;
+        if(first_write_c>len){
+            first_write_c = len;
+        }
+        //填充的位置
+        int start=512;
+        int sec = 0;
+        if(list_offset>6){
+            //如果大于最大长度，我们需要在寻找扩展列表里
+            ReadHDLBA(node->data_list[7],&sec_temp,1);
+            // 读取扩展列表
+            extend_list = (u32*)&sec_temp;
+            // 得到还未填充的完的那个扇区
+            sec=extend_list[list_offset-7];
+        }else{
+            sec = node->data_list[list_offset];
+        }
+        // 开始写数据
+        WriteHDLinear(sec*512+byte_offset,buf,first_write_c);
+        buf+=first_write_c;
+        len-=first_write_c;
+    }
+    if(len==0){
+        return;
+    }
+    // 我们即将要写的扇区序列数量
+    int size = len % 512==0?len/512:(len/512)+1;
+    // 然后开始分配扇区
+
+    int * sec_write=allocate_sector(s,node,&size);
+
     // 然后我们直接遍历给出的扇区序列进行写数据
+    for(int i =0;i<size;i++){
+        int sec_wrt = sec_write[i];
+        if(sec_wrt==node->data_list[7]){
+            continue;
+        }
+        int w_size=len;
+        if(w_size>512){
+            w_size=512;
+            WriteHDLBA(sec_wrt,buf,1);
+            len-=w_size;
+        }else{
+            WriteHDLinear(sec_wrt*512,buf,w_size);
+            len-=w_size;
+        }
+        buf+=w_size;
+    }
+    show_str_format(5,5,"addd%x",node->file_size);
+    update_inode(s,node);
 }
 
 
@@ -456,9 +504,9 @@ int do_open(char * filename,int mode){
     inode *i = getinode(filename);
     char *buf="haodeba,fenshoujiufenshou!";
     struct superblock * s = Getsuperblock(filename);
-    show_str_format(5,5,"okokookoko?");
 
-    allocate_sector(s,i,1);
+    do_write(s,i,"okokokokokwuwuwuaucsacvasda",512*10);
+
     if(i!=NULL){
         show_str_format(0,6,"items:%s",i->name);
     }else

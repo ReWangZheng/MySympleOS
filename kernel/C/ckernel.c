@@ -20,7 +20,6 @@ void __kernel__(){
     MakeFileSystem(parts[2]); //制作文件系统
     do_mkfile("C:","disk.txt",ATTR_TXT);
     do_mkfile("C:","hello.c",ATTR_TXT);
-
     do_open("C:/hello.c",1);
 
     while (1){
