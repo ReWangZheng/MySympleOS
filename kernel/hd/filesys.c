@@ -388,18 +388,29 @@ inode * getinode(char * filename){
 // 方法：创建文件夹
 void do_mkdir(char * parent,char * name){
     inode *  parent_dir = getinode(parent);
-    // 判断给定的dir到底是不是一个文件夹
-    if(parent_dir->attr % ATTR_DIR == 0){
+    
+
+    if(parent_dir->attr & ATTR_DIR != ATTR_DIR){
         panic("no dir!");
     }
-    // 如果是文件夹,则先创建一个文件出来
-    do_mkfile(parent,name,ATTR_DIR);
+    // 如果是文件夹,则先创建一个目录文件出来
+    inode *dir = do_mkfile(parent,name,ATTR_DIR);
+    // 然后写入目录初始数据 . id / .. id
+    struct dir_item items[2];
+    memset(items,0,sizeof(dir_item)*2);
+    strcpy(items[0].name,"..");
+    strcpy(items[1].name,".");
+    items[0].id=parent_dir->id;
+    items[1].id=dir->id;
+    struct superblock *s = Getsuperblock(parent);
+
+    do_write(s,dir,items,2 * sizeof(struct dir_item));
 
 }
 
 
 //方法：创建文件
-void do_mkfile(char * dir,char * file_name,u16 attr){
+inode* do_mkfile(char * dir,char * file_name,u16 attr){
     //先得到目标目录的inode
     inode *dir_inode = getinode(dir);
     // 如果给定目录不存在，或则不是目录
@@ -428,11 +439,13 @@ void do_mkfile(char * dir,char * file_name,u16 attr){
     dir_inode->file_size+=sizeof(struct dir_item);
     update_inode(s,dir_inode);
     update_inode(s,node);
+    return node;
 }
 
 void do_write(struct superblock*s,inode * node,u8 *buf,int len){
     // 得到相要写的文件所属磁盘的超级块
-    node->file_size+=len; //更新文件大小
+
+
     // 得到文件大小
     int fs = node->file_size;
     // 得到字节在扇区中的偏移
@@ -442,7 +455,8 @@ void do_write(struct superblock*s,inode * node,u8 *buf,int len){
     // 如果字节偏移大于0，那么我们先把当前扇区填充完
     Sector sec_temp;
     u32 *extend_list;
-
+    //更新文件大小
+    node->file_size+=len; 
     if(byte_offset>0){
         //填充的数量
         int first_write_c = 512 - byte_offset;
@@ -467,6 +481,8 @@ void do_write(struct superblock*s,inode * node,u8 *buf,int len){
         buf+=first_write_c;
         len-=first_write_c;
     }
+    show_str_format(5,5,"addd%x",node->file_size);
+
     if(len==0){
         return;
     }
@@ -493,7 +509,7 @@ void do_write(struct superblock*s,inode * node,u8 *buf,int len){
         }
         buf+=w_size;
     }
-    show_str_format(5,5,"addd%x",node->file_size);
+
     update_inode(s,node);
 }
 
@@ -502,13 +518,10 @@ void do_write(struct superblock*s,inode * node,u8 *buf,int len){
 //方法：打开文件
 int do_open(char * filename,int mode){
     inode *i = getinode(filename);
-    char *buf="haodeba,fenshoujiufenshou!";
     struct superblock * s = Getsuperblock(filename);
 
-    do_write(s,i,"okokokokokwuwuwuaucsacvasda",512*10);
-
     if(i!=NULL){
-        show_str_format(0,6,"items:%s",i->name);
+        show_str_format(5,5,"items:%s",i->name);
     }else
     {
         show_str_format(0,6,"no items");

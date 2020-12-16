@@ -56,5 +56,7 @@ struct file_desc{
 
 void MakeFileSystem(PartInfor info);
 int do_open(char * filename,int mode);
-void do_mkfile(char * dir,char * file_name,u16 attr);
+inode*  do_mkfile(char * dir,char * file_name,u16 attr);
+void do_mkdir(char * parent,char * name);
+void do_write(struct superblock*s,inode * node,u8 *buf,int len);
 #endif

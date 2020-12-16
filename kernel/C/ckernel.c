@@ -18,10 +18,10 @@ void __kernel__(){
     }
     WriteHDLinear(0x3000,&s,200);
     MakeFileSystem(parts[2]); //制作文件系统
-    do_mkfile("C:","disk.txt",ATTR_TXT);
-    do_mkfile("C:","hello.c",ATTR_TXT);
-    do_open("C:/hello.c",1);
-
+    do_mkdir("C:/","code");
+    do_mkfile("C:/code","my.c",ATTR_TXT);
+    do_open("C:/code/my.c",1);
+    
     while (1){
         show_str_format(0,13,"the kernel task is running :%d",number++);
         sleep(1000);
